@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12352B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Field Card">
+<meta name="application-name" content="Field Card">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="myshoots-icon-180.png">
+<link rel="icon" type="image/png" sizes="512x512" href="myshoots-icon-512.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MyShoots®">
+<meta property="og:title" content="MyShoots® Field Card: your free game day record">
+<meta property="og:description" content="Cartridges, birds down and birds retrieved, drive by drive. Measures clean shooting, not bag size.">
+<meta property="og:url" content="https://scorecard.myshoots.io/fieldcard.html">
+<meta property="og:image" content="https://scorecard.myshoots.io/field-card-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex">
+<meta name="description" content="MyShoots® Field Card: a free record of your game days. Cartridges, ammunition and birds retrieved, drive by drive.">
+<title>Field Card for Game Days | MyShoots®</title>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="a1a4a2eb-80b8-445d-8cf4-e33c593fe17c"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* MyShoots® brand palette */
+  :root {
+    color-scheme: light;
+    --green: #12352B; --green-mid: #1B4A3A; --green-soft: #2D6A4F;
+    --scarlet: #C11922; --scarlet-soft: #FBE9EA;
+    --meadow: #E9F5ED; --meadow-dark: #D6E8DC;
+    --pebble: #998F76; --pebble-dark: #6B5F47; --pebble-soft: #F2EEE6;
+    --gold: #C8A84B;
+    --ink: #1A1A1A; --ink-mid: #44504A; --ink-light: #6E7A73;
+    --card: #FFFFFF;
+    --radius-lg: 18px; --radius: 12px; --radius-sm: 8px;
+    --focus: 0 0 0 3px #C8A84B;
+    font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
+  button, a, .slot, .stepper, .shot { touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+  body {
+    background: var(--green); color: var(--ink); min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    font-size: 16px; line-height: 1.45;
+  }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: none; box-shadow: var(--focus); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  [hidden] { display: none !important; }
+
+  /* Header */
+  .app-header {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--green); border-bottom: 2px solid var(--pebble);
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 18px 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
+  .brand img { height: 24px; filter: brightness(0) invert(1); display: block; }
+  .brand span { font-size: 14px; font-weight: 600; color: #D9D3C3; padding-left: 10px; border-left: 1px solid rgba(255,255,255,.25); }
+  .header-link { color: #fff; font-size: 13px; font-weight: 600; text-decoration: none; padding: 6px 12px; border: 1px solid rgba(255,255,255,.3); border-radius: 20px; white-space: nowrap; }
+  .header-link:hover { background: rgba(255,255,255,.1); }
+
+  .main { max-width: 680px; margin: 0 auto; padding: 20px 16px 40px; }
+  h1 { color: #fff; font-size: clamp(26px, 6vw, 34px); font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; }
+  .lede { color: #CFE3D6; font-size: 15px; margin-top: 8px; max-width: 52ch; }
+  h2 { color: #fff; font-size: 18px; font-weight: 700; margin: 28px 0 12px; }
+  .card { background: var(--card); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+  .card h3 { font-size: 17px; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+  .muted { color: var(--ink-light); font-size: 14px; }
+
+  /* Resume banner */
+  .resume { background: var(--pebble-soft); border-left: 5px solid var(--gold); display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 20px; }
+  .resume p { font-size: 14px; color: var(--ink-mid); }
+  .resume strong { color: var(--green); }
+
+  /* Discipline grid */
+  .disc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+  .disc {
+    text-align: left; background: rgba(255,255,255,.07); border: 2px solid rgba(255,255,255,.14);
+    border-radius: var(--radius); padding: 16px; color: #fff; transition: background .15s, border-color .15s;
+  }
+  .disc:hover { background: rgba(255,255,255,.13); border-color: rgba(255,255,255,.35); }
+  .disc-name { display: block; font-weight: 700; font-size: 16px; }
+  .disc-sub { display: block; font-size: 13px; color: #CFE3D6; margin-top: 3px; }
+  .disc-pb { display: block; font-size: 12px; color: var(--gold); margin-top: 8px; font-weight: 600; }
+
+  /* Buttons */
+  .btn { border: none; border-radius: var(--radius); padding: 15px 18px; font-weight: 700; font-size: 16px; transition: transform .1s, background .15s; }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: var(--green); color: #fff; }
+  .btn-primary:hover { background: var(--green-mid); }
+  .btn-gold { background: var(--gold); color: var(--green); }
+  .btn-gold:hover { background: #D6B85E; }
+  .btn-ghost { background: var(--meadow); color: var(--green); }
+  .btn-ghost:hover { background: var(--meadow-dark); }
+  .btn-text { background: none; border: none; color: var(--ink-light); text-decoration: underline; font-size: 14px; padding: 8px; }
+  .btn-block { width: 100%; }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .btn-row .btn { flex: 1; min-width: 140px; }
+
+  /* Forms */
+  label.field { display: block; font-weight: 600; font-size: 14px; color: var(--ink-mid); margin-bottom: 6px; }
+  .input { width: 100%; padding: 13px 14px; border: 2px solid #D5DBD7; border-radius: var(--radius-sm); font-size: 16px; background: #fff; }
+  .input:focus { border-color: var(--green-soft); box-shadow: 0 0 0 3px rgba(45,106,79,.18); outline: none; }
+  .hint { font-size: 13px; color: var(--ink-light); margin-top: 6px; }
+  .hint a { color: var(--green-soft); }
+
+  /* Sporting setup */
+  .stand-cfg { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--meadow); }
+  .stand-cfg:last-of-type { border-bottom: none; }
+  .stand-cfg-label { font-weight: 600; color: var(--green); }
+  .stepper { display: inline-flex; align-items: center; }
+  .stepper button { width: 44px; height: 44px; border: 2px solid #D5DBD7; background: var(--meadow); font-size: 20px; font-weight: 700; color: var(--green); }
+  .stepper button:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+  .stepper button:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+  .stepper output { width: 52px; height: 44px; display: grid; place-items: center; border-top: 2px solid #D5DBD7; border-bottom: 2px solid #D5DBD7; font-weight: 700; font-size: 18px; color: var(--green); }
+  .totals { display: flex; justify-content: space-between; background: var(--meadow); border-radius: var(--radius); padding: 14px 16px; margin-top: 14px; }
+  .totals b { display: block; font-size: 26px; color: var(--green); }
+  .totals span { font-size: 13px; color: var(--ink-mid); }
+
+  /* Score bar */
+  .scorebar {
+    position: sticky; top: calc(48px + env(safe-area-inset-top, 0px)); z-index: 10;
+    background: var(--green-mid); border-radius: var(--radius-lg); padding: 14px 18px; margin-bottom: 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #fff;
+  }
+  .score-big { font-size: 46px; font-weight: 800; line-height: 1; }
+  .score-big small { font-size: 18px; font-weight: 500; color: #B9D3C4; }
+  .score-meta { text-align: right; font-size: 13px; color: #CFE3D6; }
+  .score-meta strong { display: block; font-size: 20px; color: #fff; }
+  .progress { height: 5px; background: rgba(255,255,255,.18); border-radius: 3px; overflow: hidden; margin-top: 8px; width: 160px; }
+  .progress i { display: block; height: 100%; background: var(--gold); transition: width .3s; }
+
+  .stand-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .stand-title { color: #fff; font-size: 24px; font-weight: 800; }
+  .stand-sub { color: #CFE3D6; font-size: 13px; }
+  .dots { display: flex; gap: 6px; flex-wrap: wrap; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.22); }
+  .dot.done { background: var(--pebble); }
+  .dot.now { background: #fff; transform: scale(1.3); }
+
+  /* Target slots */
+  .targets { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 8px; }
+  .slot { aspect-ratio: 1; border-radius: var(--radius-sm); border: 2px dashed #D5DBD7; display: grid; place-items: center; font-weight: 800; font-size: 18px; color: var(--ink-light); position: relative; }
+  .slot .n { position: absolute; top: 3px; left: 6px; font-size: 10px; font-weight: 600; color: var(--ink-light); }
+  .slot.next { border-style: solid; border-color: var(--green-soft); }
+  .slot.KILL, .slot.KILL_1ST { background: var(--meadow); border: 2px solid var(--green-soft); color: var(--green); }
+  .slot.KILL_2ND { background: var(--pebble-soft); border: 2px solid var(--pebble); color: var(--pebble-dark); }
+  .slot.MISS { background: var(--scarlet-soft); border: 2px solid var(--scarlet); color: var(--scarlet); }
+  .stand-score { font-size: 14px; color: var(--ink-mid); margin-top: 12px; }
+
+  /* Entry buttons */
+  .entry { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .entry.three { grid-template-columns: 1fr 1fr 1fr; }
+  .entry.three .shot { font-size: 17px; }
+  .shot { border: none; border-radius: var(--radius); min-height: 78px; padding: 12px 8px; color: #fff; font-size: 20px; font-weight: 800; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; transition: transform .08s, filter .15s; }
+  .shot small { font-size: 12px; font-weight: 500; opacity: .85; }
+  .shot:active { transform: scale(.97); }
+  .shot:disabled { opacity: .35; cursor: not-allowed; }
+  .shot-kill { background: var(--green-soft); }
+  .shot-kill2 { background: var(--pebble); }
+  .shot-miss { background: var(--scarlet); }
+  .tools { display: flex; gap: 10px; margin-top: 10px; }
+  .tools .btn { flex: 1; padding: 12px; font-size: 15px; }
+
+  /* Notes */
+  details.notes summary { cursor: pointer; font-weight: 600; color: var(--pebble-dark); list-style: none; display: flex; justify-content: space-between; }
+  details.notes summary::-webkit-details-marker { display: none; }
+  details.notes summary::after { content: "Add"; font-size: 13px; color: var(--pebble); }
+  details.notes[open] summary::after { content: "Close"; }
+  details.notes textarea { margin-top: 12px; min-height: 90px; resize: vertical; background: var(--pebble-soft); }
+
+  /* Completed stands / history */
+  .list-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--meadow); font-size: 14px; }
+  .list-row:last-child { border-bottom: none; }
+  .list-row b { color: var(--green); }
+  .chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+  .chip { font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; }
+  .chip.KILL, .chip.KILL_1ST { background: var(--meadow); color: var(--green); }
+  .chip.KILL_2ND { background: var(--pebble-soft); color: var(--pebble-dark); }
+  .chip.MISS { background: var(--scarlet-soft); color: var(--scarlet); }
+  .note-line { font-size: 13px; color: var(--ink-mid); font-style: italic; margin-top: 4px; }
+  .round-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--meadow); }
+  .round-row:last-child { border-bottom: none; }
+  .round-title { font-weight: 700; color: var(--green); font-size: 15px; }
+  .round-meta { font-size: 13px; color: var(--ink-light); }
+  .round-score { font-weight: 800; font-size: 18px; color: var(--green); text-align: right; white-space: nowrap; }
+  .round-score small { display: block; font-size: 12px; font-weight: 600; color: var(--ink-light); }
+  .pb-tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--green); background: var(--gold); border-radius: 4px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; }
+
+  /* Summary */
+  .summary { text-align: center; padding: 28px 20px; }
+  .summary-score { font-size: 72px; font-weight: 800; color: var(--green); line-height: 1; }
+  .summary-out { color: var(--ink-light); margin-top: 6px; }
+  .summary-pb { display: inline-block; margin-top: 12px; background: var(--gold); color: var(--green); font-weight: 700; padding: 6px 14px; border-radius: 20px; font-size: 14px; }
+  .summary-where { margin-top: 10px; font-weight: 600; color: var(--ink-mid); }
+  .breakdown { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 18px; }
+  .breakdown span { background: var(--meadow); border-radius: 8px; padding: 5px 10px; font-size: 13px; color: var(--ink-mid); }
+  .cta { background: var(--meadow); border: 2px solid var(--green-soft); }
+  .cta p { color: var(--ink-mid); font-size: 14px; margin: 6px 0 14px; }
+  .cta a { text-decoration: none; display: inline-block; }
+
+  button.round-row { width: 100%; background: none; border: none; border-bottom: 1px solid var(--meadow); text-align: left; }
+  button.round-row:hover { background: #F7FAF8; }
+  .round-row .chev { color: var(--ink-light); font-size: 20px; margin-left: 8px; }
+  .share-panel { margin-top: 16px; text-align: left; background: var(--meadow); border-radius: var(--radius); padding: 14px; }
+  .share-panel textarea { min-height: 80px; font-size: 14px; resize: none; }
+  .share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .share-grid a, .share-grid button { text-align: center; text-decoration: none; padding: 12px; font-size: 15px; }
+  .card-preview { display: block; width: 100%; max-width: 360px; margin: 4px auto 10px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.18); -webkit-touch-callout: default; }
+  .share-sub { font-size: 13px; color: var(--ink-mid); text-align: center; margin-bottom: 10px; }
+  .share-divider { font-size: 13px; color: var(--ink-light); text-align: center; margin: 16px 0 8px; }
+  .btn-wa { background: #1F7A4D; color: #fff; }
+  .share-grid .btn-ghost { background: #fff; border: 2px solid var(--meadow-dark); }
+  .btn-fb { background: #2D4F8A; color: #fff; }
+  .game-entry { display: grid; gap: 12px; }
+  .game-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--radius); background: var(--meadow); }
+  .game-row b { display: block; color: var(--green); font-size: 16px; }
+  .game-row span { font-size: 13px; color: var(--ink-mid); }
+  .game-row .stepper button { width: 56px; height: 56px; font-size: 26px; background: #fff; }
+  .game-row .stepper output { width: 60px; height: 56px; font-size: 24px; background: #fff; }
+  .field-intro { background: rgba(255,255,255,.07); border: 2px solid rgba(255,255,255,.14); border-radius: var(--radius); padding: 16px; color: #fff; }
+  .field-intro p { color: #CFE3D6; font-size: 14px; margin: 4px 0 12px; }
+  .stat-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .stat { background: var(--meadow); border-radius: 10px; padding: 8px 14px; text-align: center; min-width: 92px; }
+  .stat b { display: block; font-size: 20px; color: var(--green); }
+  .stat span { font-size: 12px; color: var(--ink-mid); }
+  select.input { appearance: none; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2312352B' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 14px center; }
+  .legal { margin-top: 10px; font-size: 12px; }
+  .legal a { color: #CFE3D6; margin: 0 6px; }
+  .edit-banner { background: var(--gold); color: var(--green); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 14px; font-size: 14px; }
+  .edit-banner b { display: block; font-size: 16px; }
+  .book { text-align: left; }
+  .book h3 { display: flex; justify-content: space-between; align-items: baseline; }
+  .book-meta { font-size: 14px; color: var(--ink-mid); margin: 6px 0; }
+  .book-meta b { color: var(--green); }
+  .book-text { white-space: pre-wrap; font-size: 15px; line-height: 1.55; color: var(--ink); margin: 10px 0; font-family: Georgia, 'Times New Roman', serif; }
+  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-top: 10px; }
+  .photo-grid .ph { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: var(--meadow); }
+  .photo-grid img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: pointer; }
+  .photo-grid .rm { position: absolute; top: 4px; right: 4px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(0,0,0,.6); color: #fff; font-size: 18px; line-height: 1; }
+  .add-photo { display: grid; place-items: center; aspect-ratio: 1; border: 2px dashed var(--pebble); border-radius: 10px; color: var(--pebble-dark); font-weight: 700; font-size: 13px; text-align: center; cursor: pointer; padding: 6px; }
+  .add-photo input { display: none; }
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 60; display: grid; place-items: center; padding: 16px; }
+  .lightbox img { max-width: 100%; max-height: 90vh; border-radius: 8px; }
+  .a2hs { background: #fff; border-left: 5px solid var(--gold); }
+  .a2hs h3 { margin-bottom: 4px; }
+  .a2hs .why { font-size: 14px; color: var(--ink-mid); margin-bottom: 10px; }
+  .a2hs .how { font-size: 14px; background: var(--meadow); border-radius: 10px; padding: 10px 12px; color: var(--ink); }
+  .a2hs .how svg { vertical-align: -3px; }
+  .a2hs .inapp { font-size: 13px; color: var(--ink-light); margin-top: 8px; }
+
+  /* Site menu, shared with Calendar, Brands and Clubs. Hidden when opened from the Home Screen. */
+  nav.site-nav { background: var(--green); padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; display: flex; justify-content: center; gap: 8px 20px; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,.1); }
+  nav.site-nav a { color: #fff; font-weight: 600; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
+  nav.site-nav a:hover { color: var(--gold); }
+  nav.site-nav a.active { color: var(--gold); border-bottom: 2px solid var(--gold); padding-bottom: 2px; }
+  nav.site-nav + .app-header { padding-top: 10px; }
+  @media (display-mode: standalone) { nav.site-nav { display: none; } nav.site-nav + .app-header { padding-top: calc(10px + env(safe-area-inset-top, 0px)); } }
+  .privacy { color: #B9D3C4; font-size: 12.5px; text-align: center; margin-top: 28px; }
+  .privacy a { color: #fff; }
+  .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 20px; font-size: 14px; z-index: 50; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (max-width: 420px) {
+    .brand span { display: none; }
+    .score-big { font-size: 40px; }
+    .progress { width: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="MyShoots® site">
+  <a href="https://www.myshoots.io/">Home</a>
+  <a href="https://calendar.myshoots.io/">Calendar</a>
+  <a href="https://brands.myshoots.io/">Brands</a>
+  <a href="https://clubs.myshoots.io/">Clubs</a>
+  <a href="https://scorecard.myshoots.io/">Clay Card</a>
+  <a href="https://www.myshoots.io/pro">Founding Pro</a>
+  <a href="https://partners.myshoots.io/">Founding Partners</a>
+  <a href="mailto:info@myshoots.io">Contact</a>
+</nav>
+
+<header class="app-header">
+  <a class="brand" href="#" onclick="go('home');return false;" aria-label="ScoreCard home">
+    <img src="logo.png" alt="MyShoots®">
+    <span>Field Card</span>
+  </a>
+  <a class="header-link" id="headerCta" href="#">MyShoots® Pro</a>
+</header>
+
+<main class="main" id="app" aria-live="polite"></main>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+/* ============================================================
+   MyShoots® ScoreCard — public web version
+   Everything is stored on the shooter's own device (localStorage).
+   Scores, names and notes stay on the device, except a day the shooter
+   chooses to save to their Founding Pro record (email + that day's result,
+   sent to the MyShoots® Google Sheet). Anonymous usage counts
+   (e.g. days started) go to Umami, a cookieless analytics service.
+   ============================================================ */
+
+// ---- Edit these for your site ------------------------------------------
+const CONFIG = {
+  proUrl: 'https://www.myshoots.io/pro',          // where "MyShoots® Pro" links to (founding rate sign-up)
+  clubsUrl: 'https://clubs.myshoots.io',      // club directory
+  shareUrl: 'https://scorecard.myshoots.io/fieldcard.html',        // link included when a shooter shares a score
+  // Optional: real club names from your directory, shown as suggestions.
+  // Leave empty and shooters simply type their club name.
+  clubs: [
+    // 'Example Shooting Ground',
+  ],
+};
+// ------------------------------------------------------------------------
+
+const STORE_KEY = 'myshoots-fieldcard-v1';
+const MAX_ROUNDS = 200;
+
+const DISCIPLINES = {
+  dtl:        { name: 'Down The Line', sub: '25 targets, 3 points first barrel, 2 points second', type: 'DTL',
+                stands: Array.from({length: 5}, (_, i) => ({ label: `Station ${i+1}`, count: 5 })) },
+  dtl_single: { name: 'Single Barrel', sub: '25 targets, one shot per target', type: 'BINARY',
+                stands: Array.from({length: 5}, (_, i) => ({ label: `Station ${i+1}`, count: 5 })) },
+  sporting:   { name: 'English Sporting', sub: 'Set your own stands and targets', type: 'BINARY', configurable: true,
+                stands: Array.from({length: 10}, (_, i) => ({ label: `Stand ${i+1}`, count: 10 })) },
+  skeet:      { name: 'English Skeet', sub: '25 targets over 8 stations', type: 'BINARY',
+                stands: [3,3,3,3,3,3,3,4].map((c, i) => ({ label: `Station ${i+1}`, count: c })) },
+  abt:        { name: 'ABT / Wobble Trap', sub: '25 targets over 5 pegs', type: 'BINARY',
+                stands: Array.from({length: 5}, (_, i) => ({ label: `Peg ${i+1}`, count: 5 })) },
+  five_stand: { name: 'Sport Trap / 5-Stand', sub: '25 targets over 5 stands', type: 'BINARY',
+                stands: Array.from({length: 5}, (_, i) => ({ label: `Stand ${i+1}`, count: 5 })) },
+};
+
+const POINTS = { KILL: 1, KILL_1ST: 3, KILL_2ND: 2, MISS: 0 };
+const MARK = { KILL: '✓', KILL_1ST: '✓1', KILL_2ND: '✓2', MISS: '✗' };
+const CHIP = { KILL: 'H', KILL_1ST: 'H1', KILL_2ND: 'H2', MISS: 'M' };
+
+// ---- Storage ------------------------------------------------------------
+let store = { current: null, rounds: [] };
+let storageOk = true;
+function load() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      store.current = s.current || null;
+      store.rounds = Array.isArray(s.rounds) ? s.rounds : [];
+    }
+  } catch (e) { storageOk = false; }
+}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
+  catch (e) { storageOk = false; }
+}
+
+// ---- Helpers ------------------------------------------------------------
+const $ = (sel) => document.querySelector(sel);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const maxPer = (type) => type === 'DTL' ? 3 : 1;
+const sum = (a) => a.reduce((x, y) => x + y, 0);
+const fmtDate = (iso) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const pct = (score, max) => max ? Math.round(score / max * 100) : 0;
+
+function standScore(r, i) { return sum((r.results[i] || []).map(t => POINTS[t])); }
+function standMax(r, i) { return r.stands[i].count * maxPer(r.type); }
+function roundScore(r) { return sum(r.stands.map((_, i) => standScore(r, i))); }
+function roundMax(r) { return sum(r.stands.map((_, i) => standMax(r, i))); }
+function targetsShot(r) { return sum(r.results.map(x => x.length)); }
+function targetsTotal(r) { return sum(r.stands.map(s => s.count)); }
+
+function personalBest(disciplineId, excludeId) {
+  const rs = store.rounds.filter(r => r.disciplineId === disciplineId && r.id !== excludeId);
+  if (!rs.length) return null;
+  return rs.reduce((best, r) => (pct(r.score, r.max) > pct(best.score, best.max) ? r : best));
+}
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast._t); toast._t = setTimeout(() => (t.hidden = true), 2200);
+}
+
+// ---- Views --------------------------------------------------------------
+let view = 'home';
+let setupDraft = null;   // { disciplineId, club, stands }
+let lastFinished = null; // round object shown on summary
+
+function go(v) { if (v !== 'summary') { fromHistory = false; } sharing = false; view = v; render(); window.scrollTo({ top: 0 }); }
+
+function render() {
+  const app = $('#app');
+  if (view === 'home') app.innerHTML = homeView();
+  else if (view === 'setup') app.innerHTML = setupDraft && setupDraft.game ? gameSetupView() : setupView();
+  else if (view === 'score') app.innerHTML = store.current && store.current.kind === 'game' ? gameScoreView() : scoreView();
+  else if (view === 'summary') app.innerHTML = lastFinished && lastFinished.kind === 'game' ? gameSummaryView() : summaryView();
+  else if (view === 'book') app.innerHTML = bookView();
+  if (view === 'summary' || view === 'book') loadPhotos();
+  if (view === 'score') {
+    const ta = $('#noteText');
+    const cur = store.current;
+    if (ta && cur) ta.addEventListener('input', () => { cur.notes[cur.kind === 'game' ? cur.driveIdx : cur.standIdx] = ta.value; save(); });
+  }
+  if (view === 'setup') {
+    const ci = $('#clubInput');
+    if (ci) ci.addEventListener('input', () => { setupDraft.club = ci.value; });
+  }
+}
+
+function homeView() {
+  const cur = store.current;
+  const resume = cur ? `
+    <div class="card resume">
+      <p><strong>${cur.editing ? 'Editing a saved day' : cur.kind === 'game' ? 'Field card in progress' : 'Round in progress'}</strong><br>${esc(cur.name)}${cur.club ? ' at ' + esc(cur.club) : ''}: ${cur.kind === 'game' ? `drive ${cur.driveIdx + 1} of ${cur.drives.length}` : `${roundScore(cur)} so far, ${targetsTotal(cur) - targetsShot(cur)} targets to go`}</p>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="go('score')">Carry on</button>
+        <button class="btn btn-ghost" onclick="discardCurrent()">${cur.editing ? 'Cancel edit' : 'Discard'}</button>
+      </div>
+    </div>` : '';
+
+  const cards = Object.entries(DISCIPLINES).map(([id, d]) => {
+    const pb = personalBest(id);
+    return `<button class="disc" onclick="chooseDiscipline('${id}')">
+      <span class="disc-name">${d.name}</span>
+      <span class="disc-sub">${d.sub}</span>
+      ${pb ? `<span class="disc-pb">Your best: ${pb.score}/${pb.max} (${pct(pb.score, pb.max)}%)</span>` : ''}
+    </button>`;
+  }).join('');
+
+  const rounds = store.rounds.slice(0, 15).map(r => {
+    if (r.kind === 'game') return gameHistoryRow(r);
+    const best = personalBest(r.disciplineId);
+    const isPb = best && best.id === r.id;
+    return `<button class="round-row" onclick="openRound('${r.id}')">
+      <div>
+        <div class="round-title">${esc(r.name)}${isPb ? '<span class="pb-tag">Best</span>' : ''}</div>
+        <div class="round-meta">${fmtDate(r.finishedAt)}${r.club ? ', ' + esc(r.club) : ''}</div>
+      </div>
+      <div style="display:flex;align-items:center"><div class="round-score">${r.score}/${r.max}<small>${pct(r.score, r.max)}%</small></div><span class="chev" aria-hidden="true">›</span></div>
+    </button>`;
+  }).join('');
+
+  return `
+    <h1>Your record of every game day</h1>
+    <p class="lede">Note your cartridges, birds down and birds retrieved after each drive. The ${GAME_NAME} measures how cleanly you shoot, not how much. Free, no sign-up.</p>
+    ${resume}
+    ${a2hsCard()}
+    <div class="card resume" style="margin-top:16px">
+      <p><strong>Your history won’t be lost</strong><br>When MyShoots® Pro launches, join as a founding member and every day you record here comes with you, giving you a head start on your records and a permanent Founding badge.</p>
+    </div>
+    <h2>Start a day</h2>
+    <div class="field-intro">
+      <span class="disc-name">${GAME_NAME}</span>
+      <p>Takes seconds between drives. Your cards stay on your phone.</p>
+      ${gameBestLine()}
+      <button class="btn btn-gold" onclick="chooseGame()">Start a ${GAME_NAME.toLowerCase()}</button>
+    </div>
+    ${store.rounds.length ? `
+      <h2>Your days</h2>
+      <p class="lede" style="margin:-6px 0 12px;font-size:14px">Tap a day to see the full card and your notes.</p>
+      <div class="card">
+        ${rounds}
+        ${store.rounds.length > 15 ? `<p class="muted" style="margin-top:10px">Showing your latest 15 of ${store.rounds.length} days.</p>` : ''}
+        <button class="btn btn-ghost btn-block" style="margin-top:14px" onclick="exportRounds()">Download my days (spreadsheet)</button>
+        <div style="text-align:right;margin-top:4px"><button class="btn-text" onclick="clearHistory()">Delete all days from this device</button></div>
+      </div>` : ''}
+    ${!storageOk ? `<p class="privacy">Your browser is blocking storage, so rounds won't be kept after you close this page.</p>` : ''}
+    ${privacyNote()}
+  `;
+}
+
+function legalLinks() {
+  return `<div class="legal"><a href="https://clubs.myshoots.io/terms">Terms of Use</a><a href="https://clubs.myshoots.io/privacy">Privacy &amp; Cookies</a><a href="https://clubs.myshoots.io/terms-of-sale">Terms of Sale</a><a href="https://clubs.myshoots.io/acceptable-use">Acceptable Use</a></div>`;
+}
+function privacyNote() {
+  return `<p class="privacy">Your cards stay on this device unless you choose to save a day to your Founding Pro record. We count anonymous visits to improve the Field Card.<br>
+    Your cards can be moved to <a href="${CONFIG.proUrl}">MyShoots® Pro</a> when it launches.</p>${legalLinks()}`;
+}
+
+function setupView() {
+  const d = DISCIPLINES[setupDraft.disciplineId];
+  const list = CONFIG.clubs.length ? `<datalist id="clubList">${CONFIG.clubs.map(c => `<option value="${esc(c)}">`).join('')}</datalist>` : '';
+  const sporting = d.configurable ? `
+    <div class="card">
+      <h3>Your course</h3>
+      <p class="muted">Match today's card: set how many stands and how many targets on each.</p>
+      <div class="stand-cfg">
+        <span class="stand-cfg-label">Number of stands</span>
+        <span class="stepper">
+          <button aria-label="Fewer stands" onclick="changeStands(-1)">−</button>
+          <output>${setupDraft.stands.length}</output>
+          <button aria-label="More stands" onclick="changeStands(1)">+</button>
+        </span>
+      </div>
+      ${setupDraft.stands.map((s, i) => `
+        <div class="stand-cfg">
+          <span class="stand-cfg-label">${s.label}</span>
+          <span class="stepper">
+            <button aria-label="Fewer targets on ${s.label}" onclick="changeTargets(${i},-1)">−</button>
+            <output>${s.count}</output>
+            <button aria-label="More targets on ${s.label}" onclick="changeTargets(${i},1)">+</button>
+          </span>
+        </div>`).join('')}
+      <div class="totals">
+        <div><span>Targets</span><b>${sum(setupDraft.stands.map(s => s.count))}</b></div>
+        <div style="text-align:right"><span>Stands</span><b>${setupDraft.stands.length}</b></div>
+      </div>
+    </div>` : '';
+
+  return `
+    <h1>${d.name}</h1>
+    <p class="lede">${d.sub}</p>
+    <div class="card" style="margin-top:20px">
+      <label class="field" for="clubInput">Where are you shooting? (optional)</label>
+      <input class="input" id="clubInput" type="text" autocomplete="off" maxlength="80"
+        placeholder="Ground or club name" value="${esc(setupDraft.club)}" ${CONFIG.clubs.length ? 'list="clubList"' : ''}>
+      ${list}
+      <p class="hint">Looking for somewhere to shoot? <a href="${CONFIG.clubsUrl}">Find a club</a></p>
+    </div>
+    ${sporting}
+    <button class="btn btn-gold btn-block" onclick="startRound()">Start round</button>
+    <div style="text-align:center;margin-top:8px"><button class="btn-text" style="color:#CFE3D6" onclick="go('home')">Back</button></div>
+  `;
+}
+
+function scoreView() {
+  const r = store.current;
+  if (!r) return homeView();
+  const i = r.standIdx, stand = r.stands[i], res = r.results[i];
+  const standDone = res.length >= stand.count;
+  const isLast = i === r.stands.length - 1;
+  const score = roundScore(r), max = roundMax(r);
+
+  const slots = Array.from({ length: stand.count }, (_, k) => {
+    const t = res[k];
+    const cls = t ? t : (k === res.length ? 'next' : '');
+    return `<div class="slot ${cls}" aria-label="Target ${k+1}${t ? ': ' + (t === 'MISS' ? 'miss' : 'hit') : ''}"><span class="n">${k+1}</span>${t ? MARK[t] : ''}</div>`;
+  }).join('');
+
+  const shotBtns = r.type === 'DTL' ? `
+      <button class="shot shot-kill" onclick="shot('KILL_1ST')" ${standDone ? 'disabled' : ''}>1st barrel<small>+3</small></button>
+      <button class="shot shot-kill2" onclick="shot('KILL_2ND')" ${standDone ? 'disabled' : ''}>2nd barrel<small>+2</small></button>
+      <button class="shot shot-miss" onclick="shot('MISS')" ${standDone ? 'disabled' : ''}>Miss<small>0</small></button>`
+    : `
+      <button class="shot shot-kill" onclick="shot('KILL')" ${standDone ? 'disabled' : ''}>Hit<small>+1</small></button>
+      <button class="shot shot-miss" onclick="shot('MISS')" ${standDone ? 'disabled' : ''}>Miss<small>0</small></button>`;
+
+  const nextBtn = standDone
+    ? `<button class="btn btn-gold btn-block" style="margin-bottom:16px" onclick="${isLast ? 'finishRound()' : 'nextStand()'}">${isLast ? 'Finish round' : 'Next: ' + esc(r.stands[i+1].label)}</button>`
+    : '';
+
+  const done = r.stands.slice(0, i).map((s, k) => `
+    <div class="list-row">
+      <div><b>${esc(s.label)}</b>
+        <div class="chips">${r.results[k].map(t => `<span class="chip ${t}">${CHIP[t]}</span>`).join('')}</div>
+        ${r.notes[k] ? `<div class="note-line">${esc(r.notes[k])}</div>` : ''}
+      </div>
+      <span>${standScore(r, k)}/${standMax(r, k)}</span>
+    </div>`).join('');
+
+  return `
+    <div class="scorebar">
+      <div>
+        <div class="score-big">${score}<small> / ${max}</small></div>
+        <div class="progress"><i style="width:${pct(targetsShot(r), targetsTotal(r))}%"></i></div>
+      </div>
+      <div class="score-meta"><strong>${pct(score, sum(r.results.map(x => x.length)) * maxPer(r.type))}%</strong>${targetsTotal(r) - targetsShot(r)} targets left</div>
+    </div>
+
+    <div class="stand-head">
+      <div>
+        <div class="stand-title">${esc(stand.label)}</div>
+        <div class="stand-sub">${esc(r.name)}${r.club ? ', ' + esc(r.club) : ''}</div>
+      </div>
+      <div class="dots" aria-hidden="true">${r.stands.map((_, k) => `<span class="dot ${k < i ? 'done' : k === i ? 'now' : ''}"></span>`).join('')}</div>
+    </div>
+
+    <div class="card">
+      <div class="targets">${slots}</div>
+      <p class="stand-score">This ${stand.label.split(' ')[0].toLowerCase()}: <b>${standScore(r, i)} / ${standMax(r, i)}</b></p>
+    </div>
+
+    <div class="card">
+      <div class="entry ${r.type === 'DTL' ? 'three' : ''}">${shotBtns}</div>
+      <div class="tools">
+        <button class="btn btn-ghost" onclick="undo()" ${targetsShot(r) === 0 ? 'disabled' : ''}>Undo</button>
+        <button class="btn btn-ghost" onclick="discardCurrent()">End without saving</button>
+      </div>
+      <p class="hint" style="text-align:center">Tap the MyShoots® logo to go back. Your round is kept so you can carry on.</p>
+    </div>
+
+    ${nextBtn}
+
+    <div class="card">
+      <details class="notes" ${r.notes[i] ? 'open' : ''}>
+        <summary>Notes for this ${stand.label.split(' ')[0].toLowerCase()}</summary>
+        <label class="sr-only" for="noteText">Notes</label>
+        <textarea class="input" id="noteText" maxlength="500" placeholder="Feet, hold point, lead, what worked…">${esc(r.notes[i])}</textarea>
+      </details>
+    </div>
+
+    ${i > 0 ? `<div class="card"><h3>Completed</h3>${done}</div>` : ''}
+  `;
+}
+
+let fromHistory = false;
+let sharing = false;
+
+function summaryView() {
+  const r = lastFinished;
+  if (!r) return homeView();
+  const text = shareText(r);
+  const sharePanel = sharing ? `
+    <div class="share-panel">
+      <label class="field">Your scorecard picture</label>
+      ${shareImg ? `<img class="card-preview" id="cardImg" src="${shareImg}" alt="Scorecard picture showing ${r.score} out of ${r.max}">` : `<p class="share-sub">Making your picture…</p>`}
+      ${canShareFiles ? `<button class="btn btn-gold btn-block" onclick="shareImage()">Share picture</button>
+        <p class="share-sub" style="margin-top:8px">Pick Facebook, Instagram, WhatsApp or any app</p>`
+        : `<p class="share-sub"><b>Press and hold the picture</b> to save it, then post it on Facebook or Instagram.</p>`}
+      <button class="btn btn-ghost btn-block" style="background:#fff;border:2px solid var(--meadow-dark)" onclick="downloadImage()">Save picture to phone</button>
+      <div class="share-divider">or send as a message</div>
+      <textarea class="input" id="shareText" readonly>${esc(text + ' ' + CONFIG.shareUrl)}</textarea>
+      <div class="share-grid">
+        <a class="btn btn-wa" target="_blank" rel="noopener" onclick="track('whatsapp')" href="https://wa.me/?text=${encodeURIComponent(text + ' ' + CONFIG.shareUrl)}">WhatsApp</a>
+        <button class="btn btn-ghost" onclick="copyShare()">Copy text</button>
+      </div>
+    </div>` : '';
+  const prev = personalBest(r.disciplineId, r.id);
+  const isPb = !prev || pct(r.score, r.max) > pct(prev.score, prev.max);
+  const firstRound = !prev;
+  const notes = r.stands.map((s, i) => ({ s, n: r.notes[i] })).filter(x => x.n && x.n.trim());
+
+  return `
+    <div class="card summary">
+      <p class="muted">${esc(r.name)}, ${fmtDate(r.finishedAt)}</p>
+      <div class="summary-score" style="margin-top:10px">${r.score}</div>
+      <div class="summary-out">out of ${r.max} (${pct(r.score, r.max)}%)</div>
+      ${r.club ? `<div class="summary-where">${esc(r.club)}</div>` : ''}
+      ${isPb && !firstRound ? `<div class="summary-pb">${fromHistory ? 'Personal best' : 'New personal best'}</div>` : ''}
+      ${!isPb && !fromHistory ? `<p class="muted" style="margin-top:10px">Your best: ${prev.score}/${prev.max} (${pct(prev.score, prev.max)}%)</p>` : ''}
+      <div class="breakdown">${r.stands.map((s, i) => `<span>${esc(s.label)}: ${r.standScores[i]}/${r.standMaxes[i]}</span>`).join('')}</div>
+      ${fromHistory ? '' : `<button class="btn btn-gold btn-block" style="margin-top:20px" onclick="go('home')">Start a new round</button>`}
+      <div class="btn-row" style="margin-top:${fromHistory ? 20 : 10}px">
+        <button class="btn btn-primary" onclick="toggleShare()">${sharing ? 'Hide sharing' : 'Share score'}</button>
+        <button class="btn btn-ghost" onclick="go('home')">${fromHistory ? 'Back to my days' : 'See all my days'}</button>
+      </div>
+      ${sharePanel}
+      ${fromHistory ? `<button class="btn-text" style="margin-top:10px" onclick="deleteRound('${r.id}')">Delete this round</button>` : ''}
+    </div>
+
+    ${notes.length ? `<div class="card"><h3>Your notes</h3>${notes.map(x => `<div class="list-row"><b>${esc(x.s.label)}</b><span class="note-line" style="margin:0;text-align:right">${esc(x.n)}</span></div>`).join('')}</div>` : ''}
+
+    ${a2hsCard()}
+    <div class="card cta">
+      <h3>Track every round with MyShoots® Pro</h3>
+      <p>Keep your scores safe across devices, see your progress over time and compare with other shooters. The rounds you score here will come with you when you join. Founding members lock in a reduced rate.</p>
+      <a class="btn btn-gold" href="${CONFIG.proUrl}">Find out more</a>
+    </div>
+    ${privacyNote()}
+  `;
+}
+
+// ---- Actions ------------------------------------------------------------
+function chooseDiscipline(id) {
+  if (store.current && !confirm('You have a round in progress. Start a new one and discard it?')) return;
+  store.current = null; save();
+  const d = DISCIPLINES[id];
+  setupDraft = { disciplineId: id, club: '', stands: d.stands.map(s => ({ ...s })) };
+  go('setup');
+}
+
+function changeStands(delta) {
+  const n = Math.max(1, Math.min(20, setupDraft.stands.length + delta));
+  while (setupDraft.stands.length < n) {
+    const last = setupDraft.stands[setupDraft.stands.length - 1];
+    setupDraft.stands.push({ label: `Stand ${setupDraft.stands.length + 1}`, count: last ? last.count : 10 });
+  }
+  setupDraft.stands.length = n;
+  render();
+}
+function changeTargets(i, delta) {
+  setupDraft.stands[i].count = Math.max(1, Math.min(30, setupDraft.stands[i].count + delta));
+  render();
+}
+
+function startRound() {
+  const d = DISCIPLINES[setupDraft.disciplineId];
+  const club = ($('#clubInput')?.value || '').trim();
+  store.current = {
+    id: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    disciplineId: setupDraft.disciplineId, name: d.name, type: d.type, club,
+    stands: setupDraft.stands.map(s => ({ ...s })),
+    results: setupDraft.stands.map(() => []),
+    notes: setupDraft.stands.map(() => ''),
+    standIdx: 0, startedAt: new Date().toISOString(),
+  };
+  save(); go('score');
+}
+
+function shot(type) {
+  const r = store.current; if (!r) return;
+  const res = r.results[r.standIdx];
+  if (res.length >= r.stands[r.standIdx].count) return;
+  res.push(type);
+  if (navigator.vibrate) navigator.vibrate(type === 'MISS' ? [30, 40, 30] : 25);
+  save(); render();
+}
+
+function undo() {
+  const r = store.current; if (!r) return;
+  if (r.results[r.standIdx].length === 0 && r.standIdx > 0) r.standIdx--;
+  r.results[r.standIdx].pop();
+  save(); render();
+}
+
+function nextStand() {
+  const r = store.current; if (!r) return;
+  if (r.standIdx < r.stands.length - 1) r.standIdx++;
+  save(); go('score');
+}
+
+function finishRound() {
+  const r = store.current; if (!r) return;
+  const finished = {
+    id: r.id, disciplineId: r.disciplineId, name: r.name, type: r.type, club: r.club,
+    stands: r.stands, notes: r.notes,
+    standScores: r.stands.map((_, i) => standScore(r, i)),
+    standMaxes: r.stands.map((_, i) => standMax(r, i)),
+    score: roundScore(r), max: roundMax(r),
+    startedAt: r.startedAt, finishedAt: new Date().toISOString(),
+  };
+  store.rounds.unshift(finished);
+  if (store.rounds.length > MAX_ROUNDS) store.rounds.length = MAX_ROUNDS;
+  store.current = null; save();
+  track(finished.kind === 'game' ? 'fieldcard-finish' : 'round-finish', { drives: (finished.drives || []).length });
+  lastFinished = finished; fromHistory = false; go('summary');
+}
+
+function discardCurrent() {
+  if (store.current && store.current.editing) return cancelGameEdit();
+  if (!confirm('Discard this round? It won’t be saved.')) return;
+  store.current = null; save(); go('home');
+}
+
+function clearHistory() {
+  if (!confirm('Delete all saved days from this device? This can’t be undone.')) return;
+  store.rounds.forEach(r => (r.book && r.book.photos || []).forEach(delPhoto));
+  store.rounds = []; save(); render();
+}
+
+function shareText(r) {
+  if (r.kind === 'game') return `${GAME_NAME}${r.quarry ? ' (' + r.quarry + ')' : ''}${r.club ? ' at ' + r.club : ''}: ${ratioText(r.totals)} cartridges per bird, ${retrievalPct(r.totals)}% retrieved. Recorded with MyShoots®.`;
+  return `I shot ${r.score}/${r.max} (${pct(r.score, r.max)}%) at ${r.name}${r.club ? ' at ' + r.club : ''}. Scored with MyShoots® ScoreCard.`;
+}
+let shareImg = null, shareBlob = null, canShareFiles = false;
+async function toggleShare() {
+  if (!sharing) track('share-open');
+  sharing = !sharing; shareImg = null; shareBlob = null; render();
+  if (!sharing) return;
+  try {
+    const canvas = await drawCard(lastFinished);
+    shareImg = canvas.toDataURL('image/png');
+    shareBlob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+    try {
+      const f = new File([shareBlob], 'myshoots-score.png', { type: 'image/png' });
+      canShareFiles = !!(navigator.canShare && navigator.canShare({ files: [f] }));
+    } catch (e) { canShareFiles = false; }
+  } catch (e) { console.error(e); }
+  if (sharing) render();
+}
+async function shareImage() {
+  if (!shareBlob) return;
+  track('share-picture');
+  const file = new File([shareBlob], 'myshoots-score.png', { type: 'image/png' });
+  // Picture plus message; if the phone refuses, show the picture full screen instead
+  try {
+    if (navigator.canShare && !navigator.canShare({ files: [file] })) throw new Error('unsupported');
+    await navigator.share({ files: [file], text: shareText(lastFinished) + ' ' + CONFIG.shareUrl });
+    return;
+  } catch (e) {
+    if (e && e.name === 'AbortError') return;   // they closed the share sheet
+    track('share-fallback');
+    showPicture();
+  }
+}
+// Fallback: show the picture full screen so it can be pressed and held to save or share
+function showPicture() {
+  if (!shareImg) return;
+  const ov = document.createElement('div');
+  ov.setAttribute('role', 'dialog');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:70;background:#0B1F19;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;';
+  ov.innerHTML = `<img src="${shareImg}" alt="Your score picture" style="max-width:100%;max-height:72vh;border-radius:12px;-webkit-touch-callout:default;">
+    <p style="color:#fff;font-size:16px;text-align:center;max-width:320px;line-height:1.4;margin:0"><b>Press and hold the picture</b>, then choose <b>Share</b> or <b>Save to Photos</b>.</p>
+    <button style="background:#C8A84B;color:#12352B;border:none;border-radius:12px;padding:12px 28px;font-weight:700;font-size:16px">Done</button>`;
+  ov.querySelector('button').onclick = () => ov.remove();
+  document.body.appendChild(ov);
+}
+function downloadImage() {
+  if (!shareImg) return;
+  track('save-picture');
+  try {
+    const a = document.createElement('a'); a.href = shareImg; a.download = 'myshoots-score.png';
+    document.body.appendChild(a); a.click(); a.remove();
+  } catch (e) {}
+  toast('If nothing downloaded, press and hold the picture to save it');
+}
+
+// ---- Share picture (1080 x 1350, fits Instagram and Facebook feeds) ----
+function rrect(ctx, x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+function loadImg(src) { return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }); }
+function roundIsPb(r) {
+  if (r.kind === 'game') return gameIsBest(r);
+  const same = store.rounds.filter(x => x.disciplineId === r.disciplineId && x.id !== r.id);
+  return same.length > 0 && same.every(x => pct(r.score, r.max) > pct(x.score, x.max));
+}
+async function drawCard(r) {
+  if (r.kind === 'game') return drawGameCard(r);
+  try { await document.fonts.load('800 100px Montserrat'); await document.fonts.load('600 40px Montserrat'); } catch (e) {}
+  const F = "Montserrat, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const ctx = c.getContext('2d');
+  // background
+  ctx.fillStyle = '#12352B'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#C8A84B'; ctx.fillRect(0, 0, W, 14);
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 2;
+  for (let k = 0; k < 6; k++) { ctx.beginPath(); ctx.arc(W - 40, 160, 120 + k * 70, 0, Math.PI * 2); ctx.stroke(); }
+  // logo in white
+  try {
+    const logo = await loadImg(document.querySelector('.brand img').src);
+    const lh = 64, lw = logo.width * lh / logo.height;
+    const o = document.createElement('canvas'); o.width = lw; o.height = lh;
+    const oc = o.getContext('2d'); oc.drawImage(logo, 0, 0, lw, lh);
+    oc.globalCompositeOperation = 'source-in'; oc.fillStyle = '#fff'; oc.fillRect(0, 0, lw, lh);
+    ctx.drawImage(o, 72, 70);
+  } catch (e) {}
+  // heading
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = '#fff'; ctx.font = `800 64px ${F}`; ctx.fillText(r.name, 72, 250);
+  ctx.fillStyle = '#CFE3D6'; ctx.font = `500 36px ${F}`;
+  const where = (r.club ? r.club + '  ·  ' : '') + fmtDate(r.finishedAt);
+  ctx.fillText(where.length > 52 ? where.slice(0, 50) + '…' : where, 72, 306);
+  // score card
+  const cx = 72, cy = 360, cw = W - 144, ch = 560;
+  ctx.fillStyle = '#fff'; rrect(ctx, cx, cy, cw, ch, 40); ctx.fill();
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#12352B'; ctx.font = `800 300px ${F}`; ctx.fillText(String(r.score), W / 2, cy + 330);
+  ctx.fillStyle = '#6E7A73'; ctx.font = `600 46px ${F}`; ctx.fillText(`out of ${r.max}  ·  ${pct(r.score, r.max)}%`, W / 2, cy + 410);
+  if (roundIsPb(r)) {
+    const label = 'PERSONAL BEST'; ctx.font = `800 34px ${F}`;
+    const bw = ctx.measureText(label).width + 64;
+    ctx.fillStyle = '#C8A84B'; rrect(ctx, W / 2 - bw / 2, cy + 455, bw, 64, 32); ctx.fill();
+    ctx.fillStyle = '#12352B'; ctx.fillText(label, W / 2, cy + 499);
+  }
+  ctx.textAlign = 'left';
+  // stand bars
+  const n = r.stands.length, top = 990, bh = 170, gap = n > 12 ? 8 : 16;
+  const bw = (W - 144 - gap * (n - 1)) / n;
+  ctx.fillStyle = '#CFE3D6'; ctx.font = `600 28px ${F}`; ctx.fillText('Stand by stand', 72, top - 18);
+  r.stands.forEach((s, i) => {
+    const x = 72 + i * (bw + gap), frac = r.standMaxes[i] ? r.standScores[i] / r.standMaxes[i] : 0;
+    ctx.fillStyle = 'rgba(255,255,255,0.12)'; rrect(ctx, x, top, bw, bh, 10); ctx.fill();
+    const fh = Math.max(frac * bh, frac > 0 ? 12 : 0);
+    if (fh) { ctx.fillStyle = frac === 1 ? '#C8A84B' : '#7FB596'; rrect(ctx, x, top + bh - fh, bw, fh, 10); ctx.fill(); }
+    ctx.fillStyle = '#CFE3D6'; ctx.textAlign = 'center'; ctx.font = `600 ${n > 12 ? 22 : 28}px ${F}`;
+    ctx.fillText(String(i + 1), x + bw / 2, top + bh + 38); ctx.textAlign = 'left';
+  });
+  // footer
+  ctx.fillStyle = 'rgba(255,255,255,0.15)'; ctx.fillRect(72, 1250, W - 144, 2);
+  ctx.fillStyle = '#fff'; ctx.font = `700 32px ${F}`; ctx.fillText('Scored with MyShoots® ScoreCard', 72, 1305);
+  ctx.textAlign = 'right'; ctx.fillStyle = '#C8A84B'; ctx.fillText('myshoots.io', W - 72, 1305); ctx.textAlign = 'left';
+  return c;
+}
+async function nativeShare() {
+  try { await navigator.share({ title: 'My score', text: shareText(lastFinished), url: CONFIG.shareUrl }); }
+  catch (e) { if (!e || e.name !== 'AbortError') toast('Use one of the buttons above instead'); }
+}
+async function copyShare() {
+  track('copy-text');
+  const ta = $('#shareText');
+  try { await navigator.clipboard.writeText(ta.value); toast('Copied, ready to paste'); return; } catch (e) {}
+  try { ta.select(); ta.setSelectionRange(0, 99999); document.execCommand('copy'); toast('Copied, ready to paste'); }
+  catch (e) { toast('Press and hold the text to copy it'); }
+}
+function openRound(id) {
+  track('open-past');
+  const r = store.rounds.find(x => x.id === id); if (!r) return;
+  lastFinished = r; fromHistory = true; sharing = false; view = 'summary'; render(); window.scrollTo({ top: 0 });
+}
+function deleteRound(id) {
+  if (!confirm('Delete this day and its Game Book? This can’t be undone.')) return;
+  const r = store.rounds.find(x => x.id === id);
+  (r && r.book && r.book.photos || []).forEach(delPhoto);
+  store.rounds = store.rounds.filter(x => x.id !== id); save(); go('home');
+}
+function exportRounds() {
+  track('download-spreadsheet');
+  const q = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const rows = [['Date', 'Card', 'Shoot', 'Result', '', 'Retrieved', 'Drives and cartridges', 'Notes']];
+  store.rounds.forEach(r => rows.push(r.kind === 'game' ? [
+    fmtDate(r.finishedAt), GAME_NAME + (r.quarry ? ' (' + r.quarry + ')' : ''), r.club,
+    ratioText(r.totals) + ' cartridges per bird', '', retrievalPct(r.totals) + '% retrieved',
+    r.drives.map((d, i) => `Drive ${i + 1}: ${d.shots} cartridges, ${d.down} down, ${d.picked} retrieved`).join('; ') + (ammoText(r) ? ` | Cartridges: ${ammoText(r)}` : '') + (r.birds ? ` | Birds: ${r.birds}` : ''),
+    r.notes.map((n, i) => n ? `Drive ${i + 1}: ${n}` : '').filter(Boolean).join(' | ')
+      + (r.book ? [r.book.guns && ` | Guns: ${r.book.guns}`, r.book.weather && ` | Weather: ${r.book.weather}`, r.book.text && ` | Game Book: ${r.book.text}`].filter(Boolean).join('') : ''),
+  ] : [
+    fmtDate(r.finishedAt), r.name, r.club, r.score, r.max, pct(r.score, r.max) + '%',
+    r.stands.map((s, i) => `${s.label} ${r.standScores[i]}/${r.standMaxes[i]}`).join('; '),
+    r.stands.map((s, i) => r.notes[i] ? `${s.label}: ${r.notes[i]}` : '').filter(Boolean).join(' | '),
+  ]));
+  const csv = '\ufeff' + rows.map(row => row.map(q).join(',')).join('\r\n');
+  try {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'myshoots-field-cards.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('Downloaded myshoots-field-cards.csv');
+  } catch (e) { toast('Couldn’t download from this browser'); }
+}
+
+// ---- Game days (Field Card) ---------------------------------------------
+// Measures shooting discipline (cartridges per bird, birds retrieved), never bag size.
+const GAME_NAME = 'Field Card';
+const QUARRY = ['Pheasant', 'Partridge', 'Grouse', 'Duck', 'Mixed'];
+const BIRDS = ['Reared', 'Wild', 'Mixed', 'Not sure'];
+const BORE = ['12 bore', '20 bore', '16 bore', '28 bore', '.410'];
+const SHOT_TYPE = ['Steel (non-toxic)', 'Bismuth (non-toxic)', 'Tungsten (non-toxic)', 'Other non-toxic', 'Lead'];
+const SHOT_SIZE = ['No. 3', 'No. 4', 'No. 5', 'No. 6', 'No. 7', 'Other'];
+const LOAD = ['24g', '26g', '28g', '30g', '32g', '34g', '36g', 'Other'];
+const isNonToxic = (s) => !!s && s.toLowerCase().includes('non-toxic');
+function ammoText(r) {
+  const parts = [r.bore, r.load, r.shotSize, r.shotType].filter(Boolean);
+  return parts.join(' · ') + (r.brand ? ` (${r.brand})` : '');
+}
+
+function gameTotals(g) {
+  return g.drives.reduce((a, d) => ({ shots: a.shots + d.shots, down: a.down + d.down, picked: a.picked + d.picked }), { shots: 0, down: 0, picked: 0 });
+}
+function ratioNum(t) { return t.down ? t.shots / t.down : null; }
+function ratioText(t) { const r = ratioNum(t); return r == null ? '–' : r.toFixed(1); }
+function retrievalPct(t) { return t.down ? Math.round(t.picked / t.down * 100) : 0; }
+function gameRounds(excludeId) { return store.rounds.filter(r => r.kind === 'game' && r.id !== excludeId && ratioNum(r.totals) != null); }
+function gameBest(excludeId) {
+  const rs = gameRounds(excludeId); if (!rs.length) return null;
+  return rs.reduce((b, r) => ratioNum(r.totals) < ratioNum(b.totals) ? r : b);
+}
+function gameIsBest(r) {
+  const prev = gameBest(r.id);
+  return !!prev && ratioNum(r.totals) != null && ratioNum(r.totals) < ratioNum(prev.totals);
+}
+function gameBestLine() {
+  const b = gameBest();
+  return b ? `<span class="disc-pb" style="margin:-4px 0 12px">Your best: ${ratioText(b.totals)} cartridges per bird</span>` : '';
+}
+function gameHistoryRow(r) {
+  const b = gameBest(); const isBest = b && b.id === r.id;
+  return `<button class="round-row" onclick="openRound('${r.id}')">
+    <div>
+      <div class="round-title">${GAME_NAME}${r.quarry ? ': ' + esc(r.quarry) : ''}${isBest ? '<span class="pb-tag">Best</span>' : ''}${hasBook(r) ? '<span class="pb-tag" style="background:var(--pebble-soft);color:var(--pebble-dark)">Game Book</span>' : ''}</div>
+      <div class="round-meta">${fmtDate(r.finishedAt)}${r.club ? ', ' + esc(r.club) : ''}</div>
+    </div>
+    <div style="display:flex;align-items:center"><div class="round-score">${ratioText(r.totals)}<small>per bird</small></div><span class="chev" aria-hidden="true">›</span></div>
+  </button>`;
+}
+
+function chooseGame() {
+  if (store.current && !confirm('You have a round in progress. Start a new one and discard it?')) return;
+  store.current = null; save();
+  setupDraft = { game: true, club: '', quarry: 'Pheasant', birds: 'Reared', drives: 5, bore: '12 bore', shotType: 'Steel (non-toxic)', shotSize: 'No. 5', load: '30g', brand: '' };
+  go('setup');
+}
+function gameSetupView() {
+  return `
+    <h1>${GAME_NAME}</h1>
+    <p class="lede">After each drive, note your cartridges, birds down and birds retrieved. Your card shows how cleanly you shot.</p>
+    <div class="card" style="margin-top:20px">
+      <label class="field" for="clubInput">Shoot or estate (optional)</label>
+      <input class="input" id="clubInput" type="text" autocomplete="off" maxlength="80" placeholder="Where are you shooting?" value="${esc(setupDraft.club)}">
+      <label class="field" for="quarrySel" style="margin-top:16px">Quarry</label>
+      <select class="input" id="quarrySel" onchange="setupDraft.quarry=this.value">${QUARRY.map(q => `<option ${q === setupDraft.quarry ? 'selected' : ''}>${q}</option>`).join('')}</select>
+      <label class="field" for="birdsSel" style="margin-top:14px">Birds</label>
+      <select class="input" id="birdsSel" onchange="setupDraft.birds=this.value">${BIRDS.map(q => `<option ${q === setupDraft.birds ? 'selected' : ''}>${q}</option>`).join('')}</select>
+      <div class="stand-cfg" style="margin-top:12px">
+        <span class="stand-cfg-label">Number of drives</span>
+        <span class="stepper">
+          <button aria-label="Fewer drives" onclick="setupDraft.drives=Math.max(1,setupDraft.drives-1);render()">−</button>
+          <output>${setupDraft.drives}</output>
+          <button aria-label="More drives" onclick="setupDraft.drives=Math.min(12,setupDraft.drives+1);render()">+</button>
+        </span>
+      </div>
+      <p class="hint">You can add a drive later if the day runs longer.</p>
+    </div>
+    <div class="card">
+      <h3>Your cartridges</h3>
+      <p class="muted">Recording your ammunition builds a full picture of your shooting, including your move to non-toxic shot.</p>
+      <label class="field" for="boreSel" style="margin-top:14px">Gauge</label>
+      <select class="input" id="boreSel" onchange="setupDraft.bore=this.value">${BORE.map(q => `<option ${q === setupDraft.bore ? 'selected' : ''}>${q}</option>`).join('')}</select>
+      <label class="field" for="shotTypeSel" style="margin-top:14px">Shot type</label>
+      <select class="input" id="shotTypeSel" onchange="setupDraft.shotType=this.value">${SHOT_TYPE.map(q => `<option ${q === setupDraft.shotType ? 'selected' : ''}>${q}</option>`).join('')}</select>
+      <label class="field" for="shotSizeSel" style="margin-top:14px">Shot size</label>
+      <select class="input" id="shotSizeSel" onchange="setupDraft.shotSize=this.value">${SHOT_SIZE.map(q => `<option ${q === setupDraft.shotSize ? 'selected' : ''}>${q}</option>`).join('')}</select>
+      <label class="field" for="loadSel" style="margin-top:14px">Load</label>
+      <select class="input" id="loadSel" onchange="setupDraft.load=this.value">${LOAD.map(q => `<option ${q === setupDraft.load ? 'selected' : ''}>${q}</option>`).join('')}</select>
+      <label class="field" for="brandInput" style="margin-top:14px">Cartridge brand (optional)</label>
+      <input class="input" id="brandInput" type="text" autocomplete="off" maxlength="60" placeholder="e.g. the make and name on the box" value="${esc(setupDraft.brand)}" oninput="setupDraft.brand=this.value">
+    </div>
+    <button class="btn btn-gold btn-block" onclick="startGame()">Start the day</button>
+    <div style="text-align:center;margin-top:8px"><button class="btn-text" style="color:#CFE3D6" onclick="go('home')">Back</button></div>
+    ${privacyNote()}`;
+}
+function startGame() {
+  const club = ($('#clubInput')?.value || '').trim();
+  store.current = {
+    id: 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    kind: 'game', disciplineId: 'game', name: GAME_NAME, club, quarry: setupDraft.quarry, birds: setupDraft.birds,
+    bore: setupDraft.bore, shotType: setupDraft.shotType, shotSize: setupDraft.shotSize, load: setupDraft.load, brand: (setupDraft.brand || '').trim(),
+    drives: Array.from({ length: setupDraft.drives }, () => ({ shots: 0, down: 0, picked: 0 })),
+    notes: Array.from({ length: setupDraft.drives }, () => ''),
+    driveIdx: 0, startedAt: new Date().toISOString(),
+  };
+  track('fieldcard-start', { quarry: store.current.quarry, nonToxic: isNonToxic(store.current.shotType) });
+  save(); go('score');
+}
+function gameStep(field, delta) {
+  const g = store.current; if (!g) return;
+  const d = g.drives[g.driveIdx];
+  d[field] = Math.max(0, Math.min(999, d[field] + delta));
+  // keep the numbers consistent: retrieved ≤ down ≤ cartridges
+  if (field === 'shots' && d.down > d.shots) d.down = d.shots;
+  if (field === 'down' && d.down > d.shots) d.shots = d.down;
+  if (d.picked > d.down) { if (field === 'picked') d.down = d.picked; else d.picked = d.down; }
+  if (d.down > d.shots) d.shots = d.down;
+  save(); render();
+}
+function gameGo(i) { const g = store.current; g.driveIdx = i; save(); go('score'); }
+function addDrive() { const g = store.current; g.drives.push({ shots: 0, down: 0, picked: 0 }); g.notes.push(''); g.driveIdx = g.drives.length - 1; save(); go('score'); }
+
+function gameScoreView() {
+  const g = store.current, i = g.driveIdx, d = g.drives[i], t = gameTotals(g);
+  const isLast = i === g.drives.length - 1;
+  const row = (field, label, sub) => `
+    <div class="game-row">
+      <div><b>${label}</b><span>${sub}</span></div>
+      <span class="stepper">
+        <button aria-label="Less ${label}" onclick="gameStep('${field}',-1)">−</button>
+        <output>${d[field]}</output>
+        <button aria-label="More ${label}" onclick="gameStep('${field}',1)">+</button>
+      </span>
+    </div>`;
+  const done = g.drives.slice(0, i).map((x, k) => `
+    <div class="list-row"><div><b>Drive ${k + 1}</b>${g.notes[k] ? `<div class="note-line">${esc(g.notes[k])}</div>` : ''}</div>
+    <span>${x.shots} cartridges, ${x.down} down, ${x.picked} retrieved</span></div>`).join('');
+  return `
+    ${g.editing ? `<div class="edit-banner"><b>Editing your day</b>Change any drive using + and −, move between drives, then save.</div>` : ''}
+    <div class="scorebar">
+      <div>
+        <div class="score-big">${ratioText(t)}<small> per bird</small></div>
+        <div class="progress"><i style="width:${Math.round(i / g.drives.length * 100)}%"></i></div>
+      </div>
+      <div class="score-meta"><strong>${t.down ? retrievalPct(t) + '%' : '–'}</strong>retrieved</div>
+    </div>
+    <div class="stand-head">
+      <div>
+        <div class="stand-title">Drive ${i + 1} of ${g.drives.length}</div>
+        <div class="stand-sub">${esc(g.quarry)}${g.club ? ', ' + esc(g.club) : ''}</div>
+      </div>
+      <div class="dots" aria-hidden="true">${g.drives.map((_, k) => `<span class="dot ${k < i ? 'done' : k === i ? 'now' : ''}"></span>`).join('')}</div>
+    </div>
+    <div class="card">
+      <div class="game-entry">
+        ${row('shots', 'Cartridges', 'Shots fired this drive')}
+        ${row('down', 'Birds down', 'Birds you brought down')}
+        ${row('picked', 'Retrieved', 'Found and picked up')}
+      </div>
+      <p class="stand-score">This drive: <b>${d.down ? (d.shots / d.down).toFixed(1) + ' cartridges per bird' : 'no birds yet'}</b></p>
+    </div>
+    ${g.editing ? `
+    <button class="btn btn-gold btn-block" style="margin-bottom:10px" onclick="saveGameEdit()">Save changes</button>
+    <div class="tools" style="margin:0 0 16px">
+      ${i > 0 ? `<button class="btn btn-ghost" onclick="gameGo(${i - 1})">Back a drive</button>` : ''}
+      ${!isLast ? `<button class="btn btn-ghost" onclick="gameGo(${i + 1})">Next drive</button>` : `<button class="btn btn-ghost" onclick="addDrive()">Add a drive</button>`}
+      <button class="btn btn-ghost" onclick="cancelGameEdit()">Cancel</button>
+    </div>` : `
+    <button class="btn btn-gold btn-block" style="margin-bottom:10px" onclick="${isLast ? 'finishGame()' : `gameGo(${i + 1})`}">${isLast ? 'Finish the day' : 'Next: Drive ' + (i + 2)}</button>
+    <div class="tools" style="margin:0 0 16px">
+      ${i > 0 ? `<button class="btn btn-ghost" onclick="gameGo(${i - 1})">Back a drive</button>` : ''}
+      ${isLast ? `<button class="btn btn-ghost" onclick="addDrive()">Add a drive</button>` : ''}
+      <button class="btn btn-ghost" onclick="discardCurrent()">End without saving</button>
+    </div>`}
+    <div class="card">
+      <details class="notes" ${g.notes[i] ? 'open' : ''}>
+        <summary>Notes for this drive</summary>
+        <label class="sr-only" for="noteText">Notes</label>
+        <textarea class="input" id="noteText" maxlength="500" placeholder="Peg, wind, birds you let go, what worked…">${esc(g.notes[i])}</textarea>
+      </details>
+    </div>
+    ${i > 0 ? `<div class="card"><h3>Completed drives</h3>${done}</div>` : ''}
+    <p class="privacy">Tap the MyShoots® logo to go back. Your card is kept so you can carry on.</p>`;
+}
+function finishGame() {
+  const g = store.current; if (!g) return;
+  if (g.editing) return saveGameEdit();
+  const finished = { ...g, totals: gameTotals(g), finishedAt: new Date().toISOString() };
+  delete finished.driveIdx;
+  store.rounds.unshift(finished);
+  if (store.rounds.length > MAX_ROUNDS) store.rounds.length = MAX_ROUNDS;
+  store.current = null; save();
+  track(finished.kind === 'game' ? 'fieldcard-finish' : 'round-finish', { drives: (finished.drives || []).length });
+  lastFinished = finished; fromHistory = false; go('summary');
+  setTimeout(() => { if (window.MyShootsProOffer) MyShootsProOffer.show(proOfferDay(finished)); }, 700);
+}
+// Founding Pro offer (post-day sheet at the bottom of this page)
+function proOfferDay(r) {
+  const t = r.totals || gameTotals(r);
+  return { discipline: `${GAME_NAME}: ${r.quarry || 'Game'} (${retrievalPct(t)}% retrieved, ${r.drives.length} drives)`,
+           label: `${GAME_NAME}: ${r.quarry || 'Game'}`, score: ratioText(t), unit: 'per bird', targets: '', ground: r.club || '', date: (r.finishedAt || '').slice(0, 10) };
+}
+function openProOffer() {
+  if (window.MyShootsProOffer && lastFinished && lastFinished.kind === 'game') MyShootsProOffer.open(proOfferDay(lastFinished));
+}
+function gameSummaryView() {
+  const r = lastFinished, t = r.totals;
+  const prev = gameBest(r.id);
+  const best = gameIsBest(r);
+  const text = shareText(r);
+  const notes = r.notes.map((n, i) => ({ i, n })).filter(x => x.n && x.n.trim());
+  const sharePanel = sharing ? `
+    <div class="share-panel">
+      <label class="field">Your field card picture</label>
+      ${shareImg ? `<img class="card-preview" id="cardImg" src="${shareImg}" alt="Field card picture">` : `<p class="share-sub">Making your picture…</p>`}
+      ${canShareFiles ? `<button class="btn btn-gold btn-block" onclick="shareImage()">Share picture</button>
+        <p class="share-sub" style="margin-top:8px">Best sent to shooting friends directly, by message</p>`
+        : `<p class="share-sub"><b>Press and hold the picture</b> to save it, then send it to friends.</p>`}
+      <button class="btn btn-ghost btn-block" style="background:#fff;border:2px solid var(--meadow-dark)" onclick="downloadImage()">Save picture to phone</button>
+      <div class="share-divider">or send as a message</div>
+      <textarea class="input" id="shareText" readonly>${esc(text + ' ' + CONFIG.shareUrl)}</textarea>
+      <div class="share-grid">
+        <a class="btn btn-wa" target="_blank" rel="noopener" onclick="track('whatsapp')" href="https://wa.me/?text=${encodeURIComponent(text + ' ' + CONFIG.shareUrl)}">WhatsApp</a>
+        <button class="btn btn-ghost" onclick="copyShare()">Copy text</button>
+      </div>
+    </div>` : '';
+  return `
+    <div class="card summary">
+      <p class="muted">${GAME_NAME}${r.quarry ? ', ' + esc(r.quarry) : ''}, ${fmtDate(r.finishedAt)}</p>
+      <div class="summary-score" style="margin-top:10px">${ratioText(t)}</div>
+      <div class="summary-out">cartridges per bird</div>
+      ${r.club ? `<div class="summary-where">${esc(r.club)}</div>` : ''}
+      ${ammoText(r) ? `<p class="muted" style="margin-top:6px">${esc(ammoText(r))}${r.birds && r.birds !== 'Not sure' ? ' · ' + esc(r.birds) + ' birds' : ''}</p>` : ''}
+      ${isNonToxic(r.shotType) ? `<div class="summary-pb" style="background:var(--meadow);color:var(--green)">Shot with non-toxic cartridges</div><br>` : ''}
+      ${best ? `<div class="summary-pb">${fromHistory ? 'Your cleanest day' : 'Your cleanest day yet'}</div>` : ''}
+      ${!best && prev && !fromHistory ? `<p class="muted" style="margin-top:10px">Your best: ${ratioText(prev.totals)} cartridges per bird</p>` : ''}
+      <div class="stat-row">
+        <div class="stat"><b>${t.down ? retrievalPct(t) + '%' : '–'}</b><span>retrieved</span></div>
+        <div class="stat"><b>${r.drives.length}</b><span>drives</span></div>
+        <div class="stat"><b>${t.shots}</b><span>cartridges</span></div>
+      </div>
+      <div class="breakdown">${r.drives.map((d, i) => `<span>Drive ${i + 1}: ${d.down ? (d.shots / d.down).toFixed(1) : '–'}</span>`).join('')}</div>
+      ${fromHistory ? '' : `<button class="btn btn-gold btn-block" style="margin-top:20px" onclick="go('home')">Start another day</button>`}
+      <div class="btn-row" style="margin-top:${fromHistory ? 20 : 10}px">
+        <button class="btn btn-primary" onclick="toggleShare()">${sharing ? 'Hide' : 'Send to a friend'}</button>
+        <button class="btn btn-ghost" onclick="go('home')">${fromHistory ? 'Back to my days' : 'See all my days'}</button>
+      </div>
+      <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="startGameEdit('${r.id}')">Edit card</button>
+      ${sharePanel}
+      ${fromHistory ? `<button class="btn-text" style="margin-top:10px" onclick="deleteRound('${r.id}')">Delete this card</button>` : ''}
+    </div>
+    ${bookCard(r)}
+    ${notes.length ? `<div class="card"><h3>Your notes</h3>${notes.map(x => `<div class="list-row"><b>Drive ${x.i + 1}</b><span class="note-line" style="margin:0;text-align:right">${esc(x.n)}</span></div>`).join('')}</div>` : ''}
+    ${a2hsCard()}
+    <div class="card cta">
+      <h3>Track every shoot with MyShoots® Pro</h3>
+      <p>See how your shooting improves over the season and store your certificates with expiry reminders. Join as a founding member and the days you record here come with you, giving you a head start on your records and a permanent Founding badge. Founding members lock in £1.99 a month for their first 12 months.</p>
+      <button class="btn btn-gold" onclick="openProOffer()">Reserve my founding rate</button>
+      <a class="btn-text" href="${CONFIG.proUrl}">Find out more</a>
+    </div>
+    ${privacyNote()}`;
+}
+async function drawGameCard(r) {
+  try { await document.fonts.load('800 100px Montserrat'); await document.fonts.load('600 40px Montserrat'); } catch (e) {}
+  const F = "Montserrat, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const ctx = c.getContext('2d'), t = r.totals;
+  ctx.fillStyle = '#12352B'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#C8A84B'; ctx.fillRect(0, 0, W, 14);
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 2;
+  for (let k = 0; k < 6; k++) { ctx.beginPath(); ctx.arc(W - 40, 160, 120 + k * 70, 0, Math.PI * 2); ctx.stroke(); }
+  try {
+    const logo = await loadImg(document.querySelector('.brand img').src);
+    const lh = 64, lw = logo.width * lh / logo.height;
+    const o = document.createElement('canvas'); o.width = lw; o.height = lh;
+    const oc = o.getContext('2d'); oc.drawImage(logo, 0, 0, lw, lh);
+    oc.globalCompositeOperation = 'source-in'; oc.fillStyle = '#fff'; oc.fillRect(0, 0, lw, lh);
+    ctx.drawImage(o, 72, 70);
+  } catch (e) {}
+  ctx.fillStyle = '#fff'; ctx.font = `800 64px ${F}`; ctx.fillText(GAME_NAME + (r.quarry ? ': ' + r.quarry : ''), 72, 250);
+  ctx.fillStyle = '#CFE3D6'; ctx.font = `500 36px ${F}`;
+  const where = (r.club ? r.club + '  ·  ' : '') + fmtDate(r.finishedAt);
+  ctx.fillText(where.length > 52 ? where.slice(0, 50) + '…' : where, 72, 306);
+  const cx = 72, cy = 360, cw = W - 144, ch = 560;
+  ctx.fillStyle = '#fff'; rrect(ctx, cx, cy, cw, ch, 40); ctx.fill();
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#12352B'; ctx.font = `800 280px ${F}`; ctx.fillText(ratioText(t), W / 2, cy + 320);
+  ctx.fillStyle = '#6E7A73'; ctx.font = `600 46px ${F}`; ctx.fillText('cartridges per bird', W / 2, cy + 400);
+  if (gameIsBest(r)) {
+    const label = 'CLEANEST DAY YET'; ctx.font = `800 34px ${F}`;
+    const bw = ctx.measureText(label).width + 64;
+    ctx.fillStyle = '#C8A84B'; rrect(ctx, W / 2 - bw / 2, cy + 450, bw, 64, 32); ctx.fill();
+    ctx.fillStyle = '#12352B'; ctx.fillText(label, W / 2, cy + 494);
+  }
+  // stats
+  const stats = [[t.down ? retrievalPct(t) + '%' : '–', 'retrieved'], [String(r.drives.length), 'drives'], [String(t.shots), 'cartridges']];
+  const sw = (W - 144 - 32) / 3;
+  stats.forEach(([v, l], k) => {
+    const x = 72 + k * (sw + 16);
+    ctx.fillStyle = 'rgba(255,255,255,0.10)'; rrect(ctx, x, 990, sw, 190, 24); ctx.fill();
+    ctx.fillStyle = k === 0 ? '#C8A84B' : '#fff'; ctx.font = `800 76px ${F}`; ctx.fillText(v, x + sw / 2, 1100);
+    ctx.fillStyle = '#CFE3D6'; ctx.font = `600 30px ${F}`; ctx.fillText(l, x + sw / 2, 1148);
+  });
+  ctx.textAlign = 'left';
+  if (isNonToxic(r.shotType)) { ctx.fillStyle = '#CFE3D6'; ctx.font = `600 30px ${F}`; ctx.fillText('Shot with non-toxic cartridges', 72, 1222); }
+  ctx.fillStyle = 'rgba(255,255,255,0.15)'; ctx.fillRect(72, 1250, W - 144, 2);
+  ctx.fillStyle = '#fff'; ctx.font = `700 32px ${F}`; ctx.fillText('Recorded with MyShoots®', 72, 1305);
+  ctx.textAlign = 'right'; ctx.fillStyle = '#C8A84B'; ctx.fillText('scorecard.myshoots.io', W - 72, 1305); ctx.textAlign = 'left';
+  return c;
+}
+
+// ---- Editing a finished day ---------------------------------------------
+function startGameEdit(id) {
+  if (store.current) { alert('Please finish or discard the day in progress before editing another.'); return; }
+  const idx = store.rounds.findIndex(x => x.id === id); if (idx < 0) return;
+  const round = store.rounds[idx];
+  const cur = JSON.parse(JSON.stringify(round));
+  delete cur.totals; delete cur.finishedAt;
+  Object.assign(cur, { driveIdx: 0, editing: true, editIndex: idx, backup: round });
+  store.rounds.splice(idx, 1); store.current = cur; save();
+  track('edit-day'); go('score');
+}
+function saveGameEdit() {
+  const g = store.current; if (!g || !g.editing) return;
+  const finished = { ...g, totals: gameTotals(g), finishedAt: g.backup.finishedAt, editedAt: new Date().toISOString() };
+  ['driveIdx', 'editing', 'editIndex', 'backup'].forEach(k => delete finished[k]);
+  store.rounds.splice(Math.min(g.editIndex, store.rounds.length), 0, finished);
+  store.current = null; save();
+  lastFinished = finished; fromHistory = true; sharing = false; view = 'summary'; render(); window.scrollTo({ top: 0 });
+  toast('Changes saved');
+}
+function cancelGameEdit() {
+  const g = store.current; if (!g || !g.editing) return;
+  store.rounds.splice(Math.min(g.editIndex, store.rounds.length), 0, g.backup);
+  store.current = null; save(); go('home');
+}
+
+// ---- Game Book: a write-up and photos for each day -----------------------
+// Text is kept with the day; photos are kept in this browser's IndexedDB (never uploaded).
+const MAX_PHOTOS = 8;
+let dbP = null;
+function db() {
+  if (!dbP) dbP = new Promise((res, rej) => {
+    const rq = indexedDB.open('myshoots-fieldcard', 1);
+    rq.onupgradeneeded = () => rq.result.createObjectStore('photos');
+    rq.onsuccess = () => res(rq.result); rq.onerror = () => rej(rq.error);
+  });
+  return dbP;
+}
+async function idb(mode, fn) {
+  const d = await db();
+  return new Promise((res, rej) => { const tx = d.transaction('photos', mode); const st = tx.objectStore('photos'); const rq = fn(st); tx.oncomplete = () => res(rq && rq.result); tx.onerror = () => rej(tx.error); });
+}
+const putPhoto = (id, blob) => idb('readwrite', st => st.put(blob, id));
+const getPhoto = (id) => idb('readonly', st => st.get(id));
+function delPhoto(id) { idb('readwrite', st => st.delete(id)).catch(() => {}); delete photoUrls[id]; }
+const photoUrls = {};
+async function loadPhotos() {
+  for (const img of document.querySelectorAll('img[data-photo]')) {
+    const id = img.dataset.photo;
+    try {
+      if (!photoUrls[id]) { const b = await getPhoto(id); if (b) photoUrls[id] = URL.createObjectURL(b); }
+      if (photoUrls[id]) img.src = photoUrls[id];
+      else img.closest('.ph').innerHTML = '<div style="display:grid;place-items:center;height:100%;font-size:11px;color:var(--ink-light);text-align:center;padding:4px">Photo not on this device</div>';
+    } catch (e) {}
+  }
+}
+function resizePhoto(file) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      const max = 1280, s = Math.min(1, max / Math.max(im.width, im.height));
+      const c = document.createElement('canvas'); c.width = Math.round(im.width * s); c.height = Math.round(im.height * s);
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      c.toBlob(b => b ? res(b) : rej(new Error('resize')), 'image/jpeg', 0.75);
+    };
+    im.onerror = () => { URL.revokeObjectURL(url); rej(new Error('load')); };
+    im.src = url;
+  });
+}
+function hasBook(r) { const b = r.book; return !!(b && (b.text || b.guns || b.weather || (b.photos && b.photos.length))); }
+function photoGrid(ids, removable) {
+  return ids.map(id => `<div class="ph"><img data-photo="${id}" alt="Game Book photo" onclick="openPhoto('${id}')">${removable ? `<button class="rm" aria-label="Remove photo" onclick="removeDraftPhoto('${id}')">×</button>` : ''}</div>`).join('');
+}
+function bookCard(r) {
+  const b = r.book || {};
+  if (!hasBook(r)) return `
+    <div class="card book">
+      <h3>Game Book</h3>
+      <p class="muted" style="margin:4px 0 12px">Write up the day and add photos, like a traditional game book. It stays on your phone.</p>
+      <button class="btn btn-primary btn-block" onclick="openBook('${r.id}')">Write in your Game Book</button>
+    </div>`;
+  return `
+    <div class="card book">
+      <h3>Game Book <button class="btn-text" style="padding:0" onclick="openBook('${r.id}')">Edit</button></h3>
+      ${b.guns ? `<p class="book-meta"><b>Guns:</b> ${esc(b.guns)}</p>` : ''}
+      ${b.weather ? `<p class="book-meta"><b>Weather:</b> ${esc(b.weather)}</p>` : ''}
+      ${b.text ? `<div class="book-text">${esc(b.text)}</div>` : ''}
+      ${b.photos && b.photos.length ? `<div class="photo-grid">${photoGrid(b.photos, false)}</div>` : ''}
+    </div>`;
+}
+let bookDraft = null;
+function openBook(id) {
+  const r = store.rounds.find(x => x.id === id); if (!r) return;
+  const b = r.book || {};
+  bookDraft = { id, guns: b.guns || '', weather: b.weather || '', text: b.text || '', photos: [...(b.photos || [])], added: [], removed: [] };
+  view = 'book'; render(); window.scrollTo({ top: 0 });
+}
+function bookView() {
+  const d = bookDraft, r = store.rounds.find(x => x.id === d.id);
+  return `
+    <h1>Game Book</h1>
+    <p class="lede">${r ? `${esc(r.quarry || '')}${r.club ? ', ' + esc(r.club) : ''}, ${fmtDate(r.finishedAt)}` : ''}</p>
+    <div class="card" style="margin-top:20px">
+      <label class="field" for="bkGuns">Guns and company (optional)</label>
+      <input class="input" id="bkGuns" maxlength="200" placeholder="Who you shot with, the keeper, the dogs" value="${esc(d.guns)}" oninput="bookDraft.guns=this.value">
+      <label class="field" for="bkWeather" style="margin-top:14px">Weather (optional)</label>
+      <input class="input" id="bkWeather" maxlength="120" placeholder="e.g. Bright and cold, westerly wind" value="${esc(d.weather)}" oninput="bookDraft.weather=this.value">
+      <label class="field" for="bkText" style="margin-top:14px">The day</label>
+      <textarea class="input" id="bkText" maxlength="5000" style="min-height:180px;font-family:Georgia,'Times New Roman',serif" placeholder="The drives, the birds, the dogs' work, the lunch, the moments worth remembering…" oninput="bookDraft.text=this.value">${esc(d.text)}</textarea>
+    </div>
+    <div class="card">
+      <h3>Photos</h3>
+      <p class="muted">Up to ${MAX_PHOTOS}. They're kept on this phone only, so keep the originals in your camera roll too.</p>
+      <div class="photo-grid">
+        ${photoGrid(d.photos, true)}
+        ${d.photos.length < MAX_PHOTOS ? `<label class="add-photo">+ Add photos<input type="file" accept="image/*" multiple onchange="addPhotos(this.files)"></label>` : ''}
+      </div>
+    </div>
+    <button class="btn btn-gold btn-block" onclick="saveBook()">Save Game Book</button>
+    <div style="text-align:center;margin-top:8px"><button class="btn-text" style="color:#CFE3D6" onclick="cancelBook()">Cancel</button></div>
+    ${privacyNote()}`;
+}
+async function addPhotos(files) {
+  const d = bookDraft; if (!d) return;
+  const list = Array.from(files || []).slice(0, MAX_PHOTOS - d.photos.length);
+  if (!list.length) return;
+  toast('Adding photos…');
+  for (const f of list) {
+    try {
+      const blob = await resizePhoto(f);
+      const id = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+      await putPhoto(id, blob);
+      d.photos.push(id); d.added.push(id);
+    } catch (e) { toast('One photo couldn’t be added'); }
+  }
+  render();
+}
+function removeDraftPhoto(id) {
+  const d = bookDraft; d.photos = d.photos.filter(x => x !== id);
+  if (d.added.includes(id)) { d.added = d.added.filter(x => x !== id); delPhoto(id); } else d.removed.push(id);
+  render();
+}
+function saveBook() {
+  const d = bookDraft, r = store.rounds.find(x => x.id === d.id); if (!r) return;
+  r.book = { guns: d.guns.trim(), weather: d.weather.trim(), text: d.text.trim(), photos: d.photos };
+  d.removed.forEach(delPhoto);
+  save(); track('gamebook-save', { photos: d.photos.length });
+  bookDraft = null; lastFinished = r; fromHistory = true; sharing = false; view = 'summary'; render(); window.scrollTo({ top: 0 });
+  toast('Game Book saved');
+}
+function cancelBook() {
+  const d = bookDraft; if (d) d.added.forEach(delPhoto);
+  const r = d && store.rounds.find(x => x.id === d.id);
+  bookDraft = null;
+  if (r) { lastFinished = r; fromHistory = true; view = 'summary'; render(); } else go('home');
+}
+function openPhoto(id) {
+  if (!photoUrls[id] || (bookDraft && view === 'book')) { if (!photoUrls[id]) return; }
+  const lb = document.createElement('div'); lb.className = 'lightbox'; lb.setAttribute('role', 'dialog');
+  lb.innerHTML = `<img src="${photoUrls[id]}" alt="Game Book photo">`;
+  lb.onclick = () => lb.remove(); document.body.appendChild(lb);
+}
+
+// ---- Add to Home Screen tip ---------------------------------------------
+// Home Screen web apps open like an app, and iPhones keep their saved data more reliably.
+const A2HS_KEY = 'myshoots-a2hs-dismissed';
+function deviceInfo() {
+  const ua = navigator.userAgent || '';
+  const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const android = /Android/.test(ua);
+  let standalone = false;
+  try { standalone = !!navigator.standalone || window.matchMedia('(display-mode: standalone)').matches; } catch (e) {}
+  const inApp = /FBAN|FBAV|Instagram|WhatsApp|Line\//.test(ua) || (ios && !/Safari/.test(ua));
+  return { ios, android, standalone, inApp };
+}
+function a2hsCard() {
+  const d = deviceInfo();
+  let dismissed = false; try { dismissed = localStorage.getItem(A2HS_KEY) === '1'; } catch (e) {}
+  if (d.standalone || dismissed || !(d.ios || d.android)) return '';
+  const shareIcon = '<svg width="16" height="18" viewBox="0 0 16 18" aria-hidden="true"><path d="M8 1v10M4.5 4.5 8 1l3.5 3.5M3 8H1.5v8.5h13V8H13" fill="none" stroke="#12352B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const how = d.ios
+    ? `In Safari, tap the Share button ${shareIcon} then choose <b>Add to Home Screen</b>.`
+    : `In Chrome, tap the <b>⋮</b> menu then choose <b>Add to Home screen</b> or <b>Install app</b>.`;
+  return `
+    <div class="card a2hs">
+      <h3>Add Field Card to your Home Screen</h3>
+      <p class="why">It opens like an app with one tap, and helps keep your saved days safe on this phone.</p>
+      <div class="how">${how}</div>
+      ${d.inApp ? `<p class="inapp">Opened this from WhatsApp, Facebook or Instagram? Open it in ${d.ios ? 'Safari' : 'Chrome'} first, using the menu or the browser icon.</p>` : ''}
+      <div style="text-align:right;margin-top:8px"><button class="btn-text" style="padding:4px" onclick="dismissA2hs()">Got it</button></div>
+    </div>`;
+}
+function dismissA2hs() { try { localStorage.setItem(A2HS_KEY, '1'); } catch (e) {} track('a2hs-dismiss'); render(); }
+
+// ---- Anonymous usage counts (Umami, cookieless) ------------------------
+// Only counts actions. Never sends names, scores, notes or where someone shoots.
+function track(name, data) { try { if (window.umami && umami.track) umami.track(name, data); } catch (e) {} }
+document.addEventListener('click', (e) => {
+  const a = e.target.closest && e.target.closest('a');
+  if (a && a.href && a.href.indexOf(CONFIG.proUrl.replace(/\/$/, '')) === 0) track('pro-click');
+});
+
+// ---- Start --------------------------------------------------------------
+if (deviceInfo().standalone) setTimeout(() => track('opened-from-home-screen'), 1500);
+$('#headerCta').href = CONFIG.proUrl;
+load();
+if (store.current) view = 'score';
+render();
+</script>
+<!--
+  MyShoots® Field Card — Founding Pro offer (post-day)
+  First-timers see the Founding Pro offer + email capture.
+  Anyone who has already reserved sees a one-tap "Save round" instead.
+  Anyone who taps "Not now" isn't asked again for 7 days.
+-->
+<style>
+.ms-po{position:fixed;inset:0;z-index:9999;display:flex;align-items:flex-end;justify-content:center;background:rgba(18,53,43,0);transition:background .25s ease;font-family:inherit}
+.ms-po[hidden]{display:none}
+.ms-po[data-open]{background:rgba(18,53,43,.55)}
+.ms-po__sheet{background:#fff;color:#12352B;width:100%;max-width:440px;max-height:92vh;overflow-y:auto;box-sizing:border-box;border-radius:18px 18px 0 0;padding:24px 22px calc(22px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 30px rgba(18,53,43,.25);transform:translateY(100%);transition:transform .28s ease-out}
+.ms-po[data-open] .ms-po__sheet{transform:none}
+@media (min-width:600px){.ms-po{align-items:center}.ms-po__sheet{border-radius:18px}}
+@media (prefers-reduced-motion:reduce){.ms-po,.ms-po__sheet{transition:none}}
+.ms-po__score{display:flex;align-items:baseline;gap:8px;padding-bottom:14px;margin-bottom:16px;border-bottom:1px solid #E1E3E1}
+.ms-po__num{font-size:56px;line-height:1;font-weight:800;letter-spacing:-.02em}
+.ms-po__of{font-size:20px;font-weight:600;color:#78847C;white-space:nowrap}
+.ms-po__disc{margin-left:auto;font-size:14px;line-height:1.35;color:#78847C;text-align:right}
+.ms-po h2{font-size:22px;line-height:1.2;margin:0 0 8px;color:#12352B}
+.ms-po p{font-size:15px;line-height:1.45;margin:0 0 14px;color:#2A4941}
+.ms-po__price{background:#E9F5ED;border-radius:10px;padding:12px 14px;margin:0 0 16px;font-size:15px;line-height:1.4;color:#12352B}
+.ms-po__price strong{font-size:18px}
+.ms-po__field{display:block;font-size:14px;font-weight:600;margin:0 0 6px}
+.ms-po__opt{font-weight:400;color:#78847C}
+.ms-po__input{display:block;width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:12px;margin:0 0 12px;border:1.5px solid #78847C;border-radius:8px;color:#12352B;background:#fff}
+.ms-po__check{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.4;margin:2px 0 14px;color:#2A4941}
+.ms-po__check input{margin:2px 0 0;width:18px;height:18px;flex:none;accent-color:#12352B}
+.ms-po__go{display:block;width:100%;font:inherit;font-size:16px;font-weight:700;padding:14px;border:0;border-radius:10px;background:#12352B;color:#fff;cursor:pointer}
+.ms-po__go[disabled]{opacity:.6;cursor:default}
+.ms-po__later{display:block;margin:10px auto 0;padding:6px;background:none;border:0;font:inherit;font-size:14px;color:#78847C;text-decoration:underline;cursor:pointer}
+.ms-po__err{color:#C11922;font-size:14px;min-height:1em;margin:0 0 10px}
+.ms-po__small{font-size:12px;line-height:1.4;color:#78847C;margin:12px 0 0}
+.ms-po__small a{color:inherit}
+.ms-po__badge{display:inline-block;background:#12352B;color:#fff;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700;margin:0 0 12px}
+.ms-po input:focus-visible,.ms-po button:focus-visible,.ms-po a:focus-visible{outline:3px solid #C11922;outline-offset:2px}
+</style>
+<script>
+(function () {
+  /* ---- Settings ---- */
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbzBlgk74TpG-b2KPGFpzYCDoPYtKbtUL_ZGMjcFygkmEPiNlrVZDJedt4TBHjV0H35Y/exec';
+  var PRIVACY_URL = 'https://clubs.myshoots.io/privacy';
+  var SHARE_URL = 'https://scorecard.myshoots.io/fieldcard.html';
+  var SNOOZE_DAYS = 7;
+  var K_ME = 'msFoundingPro', K_SNOOZE = 'msProOfferSnooze', K_REFBY = 'msReferredBy';
+
+  function save(k, v) { try { v === undefined ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function load(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+  function track(name) { try { if (window.umami) umami.track(name); } catch (e) {} }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function newRef() { return 'ms' + Math.random().toString(36).slice(2, 8); }
+
+  // Remember who referred this shooter (from ?ref= on the link a mate shared)
+  try {
+    var arrivedRef = new URLSearchParams(location.search).get('ref');
+    if (arrivedRef && !load(K_REFBY)) save(K_REFBY, arrivedRef.slice(0, 20));
+  } catch (e) {}
+
+  function send(data) {
+    if (window.MS_PO_DEMO) return new Promise(function (r) { setTimeout(r, 600); });
+    if (ENDPOINT.indexOf('https://') !== 0) return Promise.reject(new Error('Endpoint not set'));
+    return fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(data) });
+  }
+  function roundData(r) {
+    return {
+      discipline: r.discipline || '', score: r.score == null ? '' : r.score, targets: r.targets || '',
+      source: 'Field Card',
+      ground: r.ground || '', roundDate: r.date || new Date().toISOString().slice(0, 10),
+      unit: r.unit || ''
+    };
+  }
+
+  /* ---- Sheet ---- */
+  var root = document.createElement('div');
+  root.className = 'ms-po';
+  root.hidden = true;
+  root.setAttribute('role', 'dialog');
+  root.setAttribute('aria-modal', 'true');
+  root.setAttribute('aria-labelledby', 'ms-po-title');
+  document.body.appendChild(root);
+  var lastFocus = null;
+
+  function open(html) {
+    lastFocus = document.activeElement;
+    root.innerHTML = '<div class="ms-po__sheet">' + html + '</div>';
+    root.hidden = false;
+    requestAnimationFrame(function () { requestAnimationFrame(function () { root.setAttribute('data-open', ''); }); });
+    var first = root.querySelector('input, .ms-po__go');
+    if (first) setTimeout(function () { first.focus(); }, 50);
+  }
+  function close() {
+    root.removeAttribute('data-open');
+    root.hidden = true;
+    root.innerHTML = '';
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function notNow() { save(K_SNOOZE, Date.now()); track('pro-offer-dismissed'); close(); }
+
+  root.addEventListener('click', function (e) { if (e.target === root) notNow(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !root.hidden) notNow(); });
+
+  function scoreBlock(r) {
+    if (r.score == null || r.score === '') return '';
+    var side = [r.label || r.discipline, r.ground].filter(Boolean).map(esc).join('<br>');
+    return '<div class="ms-po__score"><span class="ms-po__num">' + esc(r.score) + '</span>' +
+      (r.targets ? '<span class="ms-po__of">/ ' + esc(r.targets) + '</span>' : (r.unit ? '<span class="ms-po__of">' + esc(r.unit) + '</span>' : '')) +
+      (side ? '<span class="ms-po__disc">' + side + '</span>' : '') + '</div>';
+  }
+
+  /* ---- First-time offer ---- */
+  function offer(r) {
+    track('pro-offer-shown');
+    open(
+      scoreBlock(r) +
+      '<h2 id="ms-po-title">Keep this day</h2>' +
+      '<p>Reserve your place as a Founding Pro and this day, plus every day you save from now, carries into MyShoots® Pro at launch, building your record over the season.</p>' +
+      '<div class="ms-po__price"><strong>£1.99 a month</strong> for your first 12 months, then £4.99. No card and no payment today.</div>' +
+      '<form novalidate>' +
+        '<label class="ms-po__field" for="ms-po-email">Email</label>' +
+        '<input class="ms-po__input" id="ms-po-email" type="email" autocomplete="email" inputmode="email" required>' +
+        '<label class="ms-po__field" for="ms-po-name">First name <span class="ms-po__opt">(optional)</span></label>' +
+        '<input class="ms-po__input" id="ms-po-name" type="text" autocomplete="given-name">' +
+        '<label class="ms-po__check"><input type="checkbox" id="ms-po-news"> Send me the Monthly Events Digest and MyShoots® news. Unsubscribe any time.</label>' +
+        '<p class="ms-po__err" aria-live="polite"></p>' +
+        '<button class="ms-po__go" type="submit">Reserve my founding rate</button>' +
+      '</form>' +
+      '<button class="ms-po__later" type="button">Not now</button>' +
+      '<p class="ms-po__small">We use your email for your Founding Pro reservation and the days you save. <a href="' + PRIVACY_URL + '" target="_blank" rel="noopener">Privacy policy</a></p>'
+    );
+    root.querySelector('.ms-po__later').onclick = notNow;
+    root.querySelector('form').onsubmit = function (e) {
+      e.preventDefault();
+      var email = root.querySelector('#ms-po-email').value.trim();
+      var err = root.querySelector('.ms-po__err');
+      var btn = root.querySelector('.ms-po__go');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Enter an email address like name@example.com.'; return; }
+      err.textContent = '';
+      btn.disabled = true; btn.textContent = 'Reserving…';
+      var ref = newRef();
+      var data = roundData(r);
+      data.type = 'signup';
+      data.source = 'Field Card';
+      data.email = email;
+      data.name = root.querySelector('#ms-po-name').value.trim();
+      data.news = root.querySelector('#ms-po-news').checked ? 'yes' : 'no';
+      data.ref = ref;
+      data.referredBy = load(K_REFBY) || '';
+      send(data).then(function () {
+        save(K_ME, { email: email, ref: ref });
+        save(K_SNOOZE);
+        track('pro-offer-reserved');
+        reserved(ref, r);
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = 'Reserve my founding rate';
+        err.textContent = 'Couldn’t reach MyShoots®. Check your signal and try again.';
+      });
+    };
+  }
+
+  /* ---- Confirmation + referral ---- */
+  function reserved(ref, r) {
+    var hasRound = r && r.score != null && r.score !== '';
+    open(
+      '<span class="ms-po__badge">Founding Pro</span>' +
+      '<h2 id="ms-po-title">You’re in</h2>' +
+      '<p>Your rate is locked at £1.99 a month for 12 months' + (hasRound ? ', and this day is saved to your Founding record' : '') + '. We’ll email you before launch.</p>' +
+      '<div class="ms-po__price">Get two mates to sign up and keep £1.99 for 18 months instead of 12.</div>' +
+      '<button class="ms-po__go" type="button">Share the Field Card</button>' +
+      '<button class="ms-po__later" type="button">Done</button>'
+    );
+    var shareBtn = root.querySelector('.ms-po__go');
+    root.querySelector('.ms-po__later').onclick = close;
+    shareBtn.onclick = function () {
+      var url = SHARE_URL + '?ref=' + encodeURIComponent(ref);
+      var text = 'I’m recording my game days on the free MyShoots® Field Card. Try it:';
+      track('pro-offer-shared');
+      if (navigator.share) {
+        navigator.share({ title: 'MyShoots® Field Card', text: text, url: url }).catch(function () {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text + ' ' + url).then(function () { shareBtn.textContent = 'Link copied'; });
+      } else {
+        prompt('Copy this link:', url);
+      }
+    };
+  }
+
+  /* ---- Returning Founding Pro: one-tap save ---- */
+  function saveRound(r, me) {
+    if (r.score == null || r.score === '') return;
+    open(
+      scoreBlock(r) +
+      '<h2 id="ms-po-title">Save this day?</h2>' +
+      '<p>Add it to your Founding record so it’s there when MyShoots® Pro launches.</p>' +
+      '<p class="ms-po__err" aria-live="polite"></p>' +
+      '<button class="ms-po__go" type="button">Save day</button>' +
+      '<button class="ms-po__later" type="button">Not now</button>'
+    );
+    var btn = root.querySelector('.ms-po__go');
+    root.querySelector('.ms-po__later').onclick = close;
+    btn.onclick = function () {
+      btn.disabled = true; btn.textContent = 'Saving…';
+      var data = roundData(r);
+      data.type = 'round';
+      data.email = me.email;
+      send(data).then(function () {
+        track('round-saved');
+        btn.textContent = 'Saved to your Founding record';
+        setTimeout(close, 1400);
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = 'Save day';
+        root.querySelector('.ms-po__err').textContent = 'Couldn’t reach MyShoots®. Check your signal and try again.';
+      });
+    };
+  }
+
+  /* ---- Public ---- */
+  window.MyShootsProOffer = {
+    show: function (r) {
+      r = r || {};
+      var me = load(K_ME);
+      if (me && me.email) return saveRound(r, me);
+      var snoozed = load(K_SNOOZE);
+      if (snoozed && Date.now() - snoozed < SNOOZE_DAYS * 864e5) return;
+      offer(r);
+    },
+    // From a button the shooter tapped: ignores the 7-day "Not now" pause
+    open: function (r) {
+      r = r || {};
+      var me = load(K_ME);
+      if (me && me.email) return saveRound(r, me);
+      offer(r);
+    },
+    // For testing: MyShootsProOffer.reset() clears this browser's state
+    reset: function () { save(K_ME); save(K_SNOOZE); save(K_REFBY); }
+  };
+})();
+</script>
+</body>
+</html>
